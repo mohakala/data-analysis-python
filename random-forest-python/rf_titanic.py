@@ -3,7 +3,13 @@ from sklearn import preprocessing
 import pandas as pd
 import numpy as np
 import logging # https://docs.python.org/2/howto/logging.html
+
+# http://stackoverflow.com/questions/4383571/importing-files-from-different-folder-in-python
+import sys
+sys.path.insert(0, 'C:\Python34\data-analysis-python')
+
 from mfunc import lin
+
 
 # http://paolaelefante.com/2016/03/a-small-guide-to-random-forest-part-2/
 # http://blog.yhat.com/posts/random-forests-in-python.html
@@ -73,7 +79,7 @@ def main():
     
 # A Get the data
 # B,C Clean and prepare the data
-    rawdata='trainTitanic.csv'
+    rawdata='C:\\Python34\\datasets\\trainTitanic.csv'
     df = pd.read_csv(rawdata)
     nSamples=len(df)
     if(False): print(df.head(2))
