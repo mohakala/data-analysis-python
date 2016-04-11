@@ -53,7 +53,13 @@ if __name__ == '__main__':
     df['Vh'].hist(bins=20)
     plt.title('Vh')
     plt.show()
+    df['Neliohinta'].hist(bins=20)
+    plt.title('Neliohinta')
+    plt.show()
     if(False):
+        df['Vh'].hist(bins=20)
+        plt.title('Vh')
+        plt.show()
         df.boxplot(column='Vh', by ='Talotiedot')
         plt.show()
         df.boxplot(column='Vh', by ='Kaupunginosa')
@@ -63,15 +69,29 @@ if __name__ == '__main__':
         temp3 = pd.crosstab(df['Huoneet'], df['Talotiedot'])
         temp3.plot(kind='bar', stacked=True, color=['red','blue','green'], grid=False)
         plt.show()
+        temp3 = pd.crosstab([df['Kunto'], df['Talotiedot']], df['Huoneet'] )
+        temp3.plot(kind='bar', stacked=True, color=['red','blue','green','cyan','yellow','black'], grid=False)
+        plt.show()
     
     # C Data munging
+    # C.1 Missing values in dataset
     lin()
     missValues=df.apply(lambda x: sum(x.isnull()),axis=0)
     print('Missing values in columns:\n',missValues)
 
-    
+    # C.2 Fill missing values
+    # df['LoanAmount'].fillna(df['LoanAmount'].mean(), inplace=True)
+    # Here simply replace by general 'Nurmijarvi'
+    # Generally this needs to be analyzed thoroughly
+    df['Kaupunginosa'].fillna('Nurmijarvi', inplace=True)
 
+    # C.3 Extreme values
+    df['Vh_log'] = np.log(df['Vh'])
+    df['Vh_log'].hist(bins=20)
+    plt.show()
 
     
-    
+    # D Predictibe model
+
+        
     
