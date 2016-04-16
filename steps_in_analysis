@@ -1,5 +1,6 @@
 Data anaysis project
 
+0 Question
 A Get the raw data
 B Clean the data and make the datasets 
 C Exploratory analysis
@@ -12,8 +13,8 @@ E Build the model
   E.2 Prepare features
   E.3 Prepare training and testing set
 F Train the model
-E Test the model 
+G Test the model 
 H Use for predictions
-
+I Put into production
 
 
