@@ -1,0 +1,19 @@
+Data anaysis project
+
+A Get the raw data
+B Clean the data and make the datasets 
+C Exploratory analysis
+D Data wrangling
+  D.1 missing values
+  D.2 filtering
+  D.3 extreme values
+E Build the model 
+  E.1 Encode categorical values to numeric
+  E.2 Prepare features
+  E.3 Prepare training and testing set
+F Train the model
+E Test the model 
+H Use for predictions
+
+
+
