@@ -1,4 +1,4 @@
-# Scrape a html page
+# Scrape an html page
 # http://docs.python-guide.org/en/latest/scenarios/scrape/
 
 from lxml import html
@@ -16,7 +16,7 @@ print(prices)
 
 
 
-# Read a html page
+# Read an html page
 # https://urllib3.readthedocs.org/en/latest/
 # http://tealscientific.com/blog/?p=2373 
 
