@@ -672,7 +672,7 @@ def predict_price(address=None,
 
 if __name__ == '__main__':
     print('begin')
-    print(predict_price(bedrooms=2))
+    print(predict_price(full_bathrooms=1.0,bedrooms=1.0,lot_size=1001.0,_type= 'Condo/Townhome/Row Home/Co-Op'))
     print(predict_price(bedrooms=0,size_sqft=100,full_bathrooms=2))
 
 
