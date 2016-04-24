@@ -16,6 +16,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn import metrics
 
+from random import randint
+
 """ Follow
 http://www.analyticsvidhya.com/blog/2016/01/complete-tutorial-learn-data-science-python-scratch-2
 
@@ -40,6 +42,7 @@ def getData(rawdata):
     return df
 
 #Generic function for making a classification model and accessing performance:
+#Source: http://www.analyticsvidhya.com/blog/2016/01/complete-tutorial-learn-data-science-python-scratch-2/
 def classification_model(model, data, predictors, outcome):
     #Fit the model:
     model.fit(data[predictors],data[outcome])
@@ -85,7 +88,7 @@ if __name__ == '__main__':
 
     # B Exploratory analysis    
     # B.1 Quick data exploration
-    print(df.head(4))
+    print(df.head(16))
     lin()
     print(df.describe())
     lin()
@@ -153,16 +156,24 @@ if __name__ == '__main__':
         df[i] = le.fit_transform(df[i])
     print('new df types:\n',df.dtypes) 
     # what value corresponds to what category?
+    TalotiedotName='kt','ot','rt'
+
+#    print(df.head(16))
 
 
-    # D.2 Logistic regression
-
-    # We have:
+    #
+    # Task and features
+    #
+    # Features:
     # Kaupunginosa,Huoneet,Talotiedot,
     # m2,Vh,Neliohinta,Rv,Hissi,Kunto
+    #
+    # Task: Määritä talotieto (kt,ot,rt) annetun muuttujan perusteella.
+    #
 
-    # Kysymys: Mikä määrää talotiedon: kt,ot,rt?
     outcome_var = 'Talotiedot'
+
+    # D.2 Logistic regression
     model = LogisticRegression()
 
     # D.2.1 Ennuste Talotiedot (kt,ot,rt) <-- Huoneet  
@@ -170,12 +181,12 @@ if __name__ == '__main__':
         temp3 = pd.crosstab(df['Huoneet'], df['Talotiedot'])
         temp3.plot(kind='bar', stacked=True, color=['red','blue','green'], grid=False)
         plt.show()
-
     predictor_var = ['Huoneet']
     classification_model(model, df,predictor_var,outcome_var)
     for i in range(1,5):
         print('Pred: Huoneet:',i,'Talotiedot:',model.predict(i))
-
+    lin()
+    
     # D.2.2 Ennuste Talotiedot <-- Kaupunginosa
     predictor_var = ['Kaupunginosa']
     classification_model(model, df,predictor_var,outcome_var)
@@ -192,12 +203,100 @@ if __name__ == '__main__':
     predictor_var = ['m2']
     classification_model(model, df,predictor_var,outcome_var)
     for i in range(30,150,20):
-        print('Pred: m2',i,'Talotiedot:',model.predict(i))
+        print('Pred: m2',i,'Talotiedot:',TalotiedotName[model.predict(i)])
 
     # D.2.5 Ennuste Talotiedot <-- m2,Rv
     predictor_var = ['m2','Rv']
     classification_model(model, df,predictor_var,outcome_var)
 
+
+    # D.3 Logistic regression, Decision Tree, Random Forest
+    lin()
+
+    print('LogisticRegression')
+    model = LogisticRegression()
+    predictor_var = ['Huoneet','m2','Kaupunginosa','Rv','Hissi','Vh','Neliohinta']
+#    predictor_var = ['Huoneet','m2']
+    print(predictor_var)
+    classification_model(model, df,predictor_var,outcome_var)
+    lin()
+
+    model=DecisionTreeClassifier()
+    print('DecisionTreeClassifier')
+    predictor_var = ['Huoneet','m2','Kaupunginosa','Rv','Hissi','Vh','Neliohinta']
+#    predictor_var = ['Huoneet','m2','Kaupunginosa']
+    print(predictor_var)
+    classification_model(model, df,predictor_var,outcome_var)
+    lin()
+
+    print('RandomForestClassifier')
+    model = RandomForestClassifier(n_estimators=100)
+    predictor_var = ['Huoneet','m2','Kaupunginosa','Rv','Hissi','Vh']
+    print(predictor_var)
+    classification_model(model, df,predictor_var,outcome_var)
+    lin()
+
+    print('RandomForestClassifier')
+    model = RandomForestClassifier(n_estimators=100)
+    predictor_var = ['Huoneet','m2','Kaupunginosa','Rv','Hissi','Vh','Neliohinta']
+    print(predictor_var)
+    classification_model(model, df,predictor_var,outcome_var)
+
+    #Create a series with feature importances:
+    featimp = pd.Series(model.feature_importances_, index=predictor_var).sort_values(ascending=False)
+    print(featimp)
+    lin()
+
+    print('RandomForestClassifier')
+    model = RandomForestClassifier(n_estimators=100)
+    predictor_var = ['m2','Rv','Hissi','Vh']
+    print(predictor_var)
+    classification_model(model, df,predictor_var,outcome_var)
+    lin()
+
+    print('RandomForestClassifier')
+    model = RandomForestClassifier(n_estimators=25,min_samples_split=25,max_depth=7,max_features=1)
+#    predictor_var = ['m2','Vh','Hissi','Rv','Neliohinta']
+    predictor_var = ['m2','Vh','Hissi','Rv']
+    print(predictor_var)
+    classification_model(model, df,predictor_var,outcome_var)
+    lin()
+
+    print('For previous model, sample RFs parameters and see the CV score')
+    i=0
+    while i < 1: # 20
+        i=i+1
+        ne=10*randint(1,10)
+        mss=randint(2,35)
+        md=randint(3,10)
+        mf=randint(1,3)
+        model = RandomForestClassifier(n_estimators=ne,min_samples_split=mss,max_depth=md,max_features=mf)
+        predictor_var = ['m2','Vh','Hissi','Rv']
+        classification_model(model, df,predictor_var,outcome_var)
+        print('Params=',ne,mss,md,mf)
+    lin()
+
+    # Best param found for now: 80 18 10 1: cv=85.259%, acc=89.877
+    print('Best for now:')
+    ne,mss,md,mf=80, 18, 10, 1
+    print('RandomForestClassifier')
+    model = RandomForestClassifier(n_estimators=ne,min_samples_split=mss,max_depth=md,max_features=mf)
+    predictor_var = ['m2','Vh','Hissi','Rv']
+    print(predictor_var)
+    classification_model(model, df,predictor_var,outcome_var)
+  
+    # Make predictions on training set:
+    features=(86,170000,0,1987)
+    prediction=model.predict(features)
+    print('Predict:',features,' Talotiedot:',TalotiedotName[prediction])
+    lin()
+
     
+
+    
+        
+
+
+
 
     
