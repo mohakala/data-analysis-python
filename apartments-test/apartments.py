@@ -285,7 +285,7 @@ if __name__ == '__main__':
     print(predictor_var)
     classification_model(model, df,predictor_var,outcome_var)
   
-    # Make predictions on training set:
+    # Make predictions:
     features=(86,170000,0,1987)
     prediction=model.predict(features)
     print('Predict:',features,' Talotiedot:',TalotiedotName[prediction])
