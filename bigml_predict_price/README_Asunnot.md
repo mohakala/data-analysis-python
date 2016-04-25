@@ -10,6 +10,8 @@ Dataset from Nurmijarvi
 
 A Get the raw data
 
+    Uploaded dataset to BigML
+
 B Clean the data and make the datasets
 
 C Exploratory analysis
@@ -25,6 +27,7 @@ D.2 missing values
 D.3 filtering (extreme values...)
 
     Manual configuration, filter dataset
+    Filtered out the NA values in Kaupunginosa
 
 E Build the model
 
@@ -32,6 +35,7 @@ E.1 Prepare features
 
 E.2 Prepare training and testing set
 
+    One-click model
     Model 1 done, 80/20
 
 F Train the model
@@ -40,8 +44,8 @@ F Train the model
 
 G Test and evaluate the model
 
-    Model 1: MAE = $75285, R-squared = 0.55
-    Model 2 (Random forest): MAE = $73101, R-squared 0.60
+    Model 1 Tree: MAE = 34937, R-squared = 0.49
+    Model 2 Random forest: MAE = 26352, R-squared = 0.63
 
 H Use for predictions
 
@@ -49,4 +53,4 @@ H Use for predictions
 
 I Put into production
 
-    Model 1, Python code ok, ur -> r
+    TO DO
