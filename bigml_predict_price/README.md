@@ -1,3 +1,7 @@
+# Study BigML
+
+http://www.louisdorard.com/guest/everyone-can-do-data-science-bigml
+
 0 Question
 - Predictive model for the price of an apartment
 
