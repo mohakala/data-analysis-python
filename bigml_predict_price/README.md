@@ -6,6 +6,7 @@ http://www.louisdorard.com/guest/everyone-can-do-data-science-bigml
 - Predictive model for the price of an apartment
 
 A Get the raw data
+
 B Clean the data and make the datasets 
 - Downloaded the cleaned data
 
@@ -13,13 +14,18 @@ C Exploratory analysis
 - From dataset view
 
 D Data wrangling
+
   D.1 Encode categorical values to numeric
+  
   D.2 missing values
+  
   D.3 filtering (extreme values...)
 - Manual configuration, filter dataset
 
 E Build the model 
+
   E.1 Prepare features
+  
   E.2 Prepare training and testing set
 - Model 1 done, 80/20 
 
