@@ -1,6 +1,8 @@
 # Study BigML
 
-http://www.louisdorard.com/guest/everyone-can-do-data-science-bigml
+http://www.louisdorard.com/guest/everyone-can-do-data-science-bigml 
+
+http://cloudacademy.com/blog/bigml-machine-learning/
 
 Dataset from the link
 
