@@ -2,7 +2,7 @@
 
 Follow: http://www.louisdorard.com/guest/everyone-can-do-data-science-bigml
 
-Dataset from Nurmijarvi
+Dataset from N
 
 0 Question
 
