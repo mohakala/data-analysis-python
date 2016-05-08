@@ -2,7 +2,10 @@
 """
 
 from pyspark import SparkContext
-#import unittest
+import sys
+import unittest
+#import numpy as np
+import psutil
 
 def wordFrequencies(fileName):
     sc = SparkContext("local")
@@ -16,33 +19,44 @@ def wordFrequencies(fileName):
 #    return(a,b)
     return(freqlist,ninstances)
 
-def countWord(fileName,stringName):
+def countString(fileName,stringName):
+    # Counts the number of occurrences of stringName
     sc = SparkContext("local")
     textFile=sc.textFile(fileName).cache()
     nstrings=textFile.filter(lambda s: stringName in s).count()
     sc.stop()
     return(nstrings)
 
-def test_wordFrequencies():
+def simpletest_wordFrequencies():
     freqlist,ninstances = wordFrequencies('unittest_inputref.md')
-    assertEqual(ninstances,260)
-
+    if ninstances != 259:
+        print('Test not passed')
+        sys.exit(1)
+    else:
+        print('Test OK')
+        return()
+    
     
 if __name__ == '__main__':
+
     fileName="README.md"
 
+    # Some general tests
+    # print(np.zeros(5))
     
-    # word frequences
-    # test_wordFrequencies()
+    # wordFrequences
+    simpletest_wordFrequencies() # TODO better
     
     freqlist,ninstances = wordFrequencies(fileName)
     print('Number of different words:',ninstances)
     if(False): print(freqlist)
 
+    # countString
     # number of occurences of a string
-    stringToFind='a'
-    print('String to find:',stringToFind)
-    print("# lines with the string: %i" % (countWord(fileName,stringToFind)))
+    stringToFind='for'
+    #print('String to find:',stringToFind)
+    #print("# lines with the string: %i" % (countString(fileName,stringToFind)))
+    print("String --> %s <-- occurs %i times" % (stringToFind,countString(fileName,stringToFind)))
 
 
 
