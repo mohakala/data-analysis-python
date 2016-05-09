@@ -292,12 +292,20 @@ if __name__ == '__main__':
     print('Predict:',features,' Talotiedot:',TalotiedotName[prediction])
     lin()
 
+
     # D.4 K-Means 
-    # Quick first test for k-means 090516
-    lin()
-    predictor_var = ['m2','Vh','Hissi','Rv']
+
+    # Quick first test for K-Means 090516
+    
+    # predictor_var = ['m2','Vh','Hissi','Rv']
+    predictor_var = ['Huoneet','Talotiedot','Hissi','Kaupunginosa']
+
     k_means = KMeans(n_clusters=3, random_state=0)
-    k_means.fit(df[predictor_var])
+    k_means.fit(df[predictor_var].iloc[0:290,:])
+    k_means_predicted = k_means.predict(df[predictor_var].iloc[291:296,:])
+    print('DF:',df[['Huoneet','Talotiedot','Hissi','Kaupunginosa']][291:296])
+    print('Predicted classes:',k_means_predicted)
+    # To continue...
 
     
 
