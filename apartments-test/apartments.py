@@ -15,6 +15,7 @@ from sklearn.cross_validation import KFold   #For K-fold cross validation
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn import metrics
+from sklearn.cluster import KMeans
 
 from random import randint
 
@@ -290,6 +291,16 @@ if __name__ == '__main__':
     prediction=model.predict(features)
     print('Predict:',features,' Talotiedot:',TalotiedotName[prediction])
     lin()
+
+    # D.4 K-Means 
+    # Quick first test for k-means 090516
+    lin()
+    predictor_var = ['m2','Vh','Hissi','Rv']
+    k_means = KMeans(n_clusters=3, random_state=0)
+    k_means.fit(df[predictor_var])
+
+    
+
 
     
 
