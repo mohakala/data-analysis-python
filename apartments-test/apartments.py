@@ -306,15 +306,19 @@ if __name__ == '__main__':
     # How many clusters one should choose?
     # Study inertia as a function of n_clusters
     inertiaValues = []
+    scoreValues = []
     for i in range(3,14):
         k_means = KMeans(n_clusters=i, random_state=0)
         k_means.fit(df[predictor_var].iloc[trainRange,:])   #iloc[0:290,:])
-        print('i, inertia:',i,k_means.inertia_)
+        score=k_means.score(df[predictor_var].iloc[trainRange,:])
+        print('i, inertia, score:',i,k_means.inertia_,score)
         inertiaValues.append(k_means.inertia_)
-    fig=plt.figure()
-    ax=fig.add_subplot(2,2,1)
-    ax.plot(range(3,14),inertiaValues)
-    plt.show()
+        scoreValues.append(k_means.score(df[predictor_var].iloc[trainRange,:]))
+    if(False):
+        fig=plt.figure()
+        ax=fig.add_subplot(2,2,1)
+        ax.plot(range(3,14),inertiaValues)
+        plt.show()
 
     # Do some classifications for the test set
     predicted = k_means.predict(df[predictor_var].iloc[testRange,:])
