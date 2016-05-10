@@ -294,17 +294,33 @@ if __name__ == '__main__':
 
 
     # D.4 K-Means 
-
-    # Quick first test for K-Means 090516
+    # First tests for K-Means
     
-    # predictor_var = ['m2','Vh','Hissi','Rv']
-    predictor_var = ['Huoneet','Talotiedot','Hissi','Kaupunginosa']
+    predictor_var = ['Huoneet','Talotiedot','m2','Vh','Neliohinta','Rv']
 
-    k_means = KMeans(n_clusters=3, random_state=0)
-    k_means.fit(df[predictor_var].iloc[0:290,:])
-    k_means_predicted = k_means.predict(df[predictor_var].iloc[291:296,:])
-    print('DF:',df[['Huoneet','Talotiedot','Hissi','Kaupunginosa']][291:296])
-    print('Predicted classes:',k_means_predicted)
+    ndf=len(df)
+    upperlimit=int(0.80*ndf) # Take 80% of values for training set
+    trainRange=np.arange(0,upperlimit)
+    testRange=np.arange(upperlimit+1,ndf)
+
+    # How many clusters one should choose?
+    # Study inertia as a function of n_clusters
+    inertiaValues = []
+    for i in range(3,14):
+        k_means = KMeans(n_clusters=i, random_state=0)
+        k_means.fit(df[predictor_var].iloc[trainRange,:])   #iloc[0:290,:])
+        print('i, inertia:',i,k_means.inertia_)
+        inertiaValues.append(k_means.inertia_)
+    fig=plt.figure()
+    ax=fig.add_subplot(2,2,1)
+    ax.plot(range(3,14),inertiaValues)
+    plt.show()
+
+    # Do some classifications for the test set
+    predicted = k_means.predict(df[predictor_var].iloc[testRange,:])
+    print('DF:',df[predictor_var][upperlimit+1:upperlimit+5])
+    print('Predicted classes:',predicted[0:4])
+
     # To continue...
 
     
