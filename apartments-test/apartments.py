@@ -295,6 +295,7 @@ if __name__ == '__main__':
 
     # D.4 K-Means 
     # First tests for K-Means
+    # http://www.analyticsvidhya.com/blog/2015/08/common-machine-learning-algorithms/
     
     predictor_var = ['Huoneet','Talotiedot','m2','Vh','Neliohinta','Rv']
 
@@ -325,6 +326,19 @@ if __name__ == '__main__':
     print('DF:',df[predictor_var][upperlimit+1:upperlimit+5])
     print('Predicted classes:',predicted[0:4])
 
+
+    # D.5 Dimensionality reduction 
+    # First tests
+
+    from sklearn import decomposition
+
+    pca= decomposition.PCA()
+    # fa= decomposition.FactorAnalysis()
+    train=df[predictor_var].iloc[trainRange,:]
+    train_reduced = pca.fit_transform(train)
+    # ??? To study 
+    
+    
     # To continue...
 
     
