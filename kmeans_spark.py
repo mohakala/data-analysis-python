@@ -59,6 +59,7 @@ def kmeansExample1():
 
 def readCSV(fileName):
     # Reading csv file directly to numeric values
+    # http://stackoverflow.com/questions/28782940/load-csv-file-with-spark
     sc = SparkContext("local")
     data=sc.textFile(fileName). \
           map(lambda line: line.split(",")). \
