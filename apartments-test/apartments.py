@@ -158,8 +158,14 @@ if __name__ == '__main__':
     print('new df types:\n',df.dtypes) 
     # what value corresponds to what category?
     TalotiedotName='kt','ot','rt'
+    # print(df.head(16))
 
-#    print(df.head(16))
+    # Write to file
+    if(False):
+        columns_to_file = ['Huoneet','Talotiedot','m2','Vh','Neliohinta','Rv']
+        data_to_file=df[columns_to_file].values
+        np.savetxt('asunnot_250316_cleaned_numerical.csv', data_to_file, delimiter=',') 
+        
 
 
     #
@@ -321,6 +327,10 @@ if __name__ == '__main__':
         ax.plot(range(3,14),inertiaValues)
         plt.show()
 
+    # Study the case n_clusters
+    k_means = KMeans(n_clusters=10, random_state=0)
+    k_means.fit(df[predictor_var].iloc[trainRange,:])
+    
     # Do some classifications for the test set
     predicted = k_means.predict(df[predictor_var].iloc[testRange,:])
     print('DF:',df[predictor_var][upperlimit+1:upperlimit+5])
