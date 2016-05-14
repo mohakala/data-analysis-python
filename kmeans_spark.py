@@ -39,6 +39,7 @@ def kmeansOned(fileName,nClusters):
 
     WSSSE = parsedData.map(lambda point: error(point)).reduce(lambda x, y: x + y)
     print("Within Set Sum of Squared Error = " + str(WSSSE))
+    sc.stop()
     return()
 
 def kmeansExample1():
@@ -52,18 +53,34 @@ def kmeansExample1():
     print('Index for 8.0 8.0:',model.predict(array([8.0,8.0])))
     print('Index for -1.0 -4.0:',model.predict(array([-1.0,-4.0])))
     print('Test:',model.predict(array([0.0, 0.0])) == model.predict(array([1.0, 1.0])))
+    sc.stop()
     return()
 
-def kmeansMultid(data,nClusters):
-    # Multicolumnar data
 
-    # To do: Now data is passed simply as an argument and parallelized.
-    # Add the option to read from file.
-
+def readCSV(fileName):
+    # Reading csv file directly to numeric values
     sc = SparkContext("local")
-    model = KMeans.train(sc.parallelize(data), nClusters, maxIterations=10, initializationMode="random",seed=50, initializationSteps=5, epsilon=1e-4)
+    data=sc.textFile(fileName). \
+          map(lambda line: line.split(",")). \
+          filter(lambda line: len(line)>1). \
+          map(lambda line: (line[0],line[1],line[2],line[3],line[4],line[5]))
+    collection=data.collect()
+    count=data.count()
+    print('length of data:',count)
+    print('first two lines:',data.take(2))
+    sc.stop()
+    return()
+    
+
+def kmeansMultid(data,nClusters):
+    # Multicolumnar data as input 
+    sc = SparkContext("local")
+    dataRDD=sc.parallelize(data)
+    model = KMeans.train(dataRDD, nClusters, maxIterations=10, initializationMode="random",seed=50, initializationSteps=5, epsilon=1e-4)
     print('Number of clusters:',model.k)
     print('Number of instances for training:',len(data))
+    print('first two lines:',dataRDD.take(2))
+    
     
     # Predictions
     case=array([4,2,116,200000,1724,1978])
@@ -72,7 +89,10 @@ def kmeansMultid(data,nClusters):
     print('Prediction for:',case,' is:',model.predict(case))
     case=array([4,1,226,440000,1947,1927])
     print('Prediction for:',case,' is:',model.predict(case))
-    
+
+    sc.stop()
+    return()
+
       
 if __name__ == '__main__':
 
@@ -98,6 +118,8 @@ if __name__ == '__main__':
     # Other tests
     if(False):
         print(Vectors.sparse(100, [0, 2], [1.0, 3.0]))
+
+    if(False): readCSV("tests_mh/asunnot_250316_cleaned_numerical.csv")
 
 
 
