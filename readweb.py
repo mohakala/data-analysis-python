@@ -46,8 +46,17 @@ def containsWord(url,words):
         with open('index.html', 'wb') as f:
             f.write(response.data)
         response.release_conn()
-    if(False): print(response.data)
+    if(False): 
+        print(response.data)
     print('datatype of response.data:',type(response.data))
+
+    index=response.data.find('Avoimetx')
+    if(index > 0):
+        print('Index:',index)
+        answer=True
+    else:
+        print('Word not found')
+
     return(answer)
     
 url='http://www.kiinteistomaailma.fi/index.html'
