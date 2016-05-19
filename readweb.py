@@ -1,5 +1,14 @@
-### #!/usr/bin/env python
-# Scrape an html page
+#!/usr/bin/env python
+
+import logging
+logging.basicConfig(level=logging.INFO,format='%(asctime)s %(message)s')
+#logging.basicConfig(level=logging.WARNING,format='%(asctime)s %(message)s')
+
+"""
+Modules related to web parsing
+"""
+
+# Scrape an html document to find values in fields 
 # http://docs.python-guide.org/en/latest/scenarios/scrape/
 
 from lxml import html
@@ -34,35 +43,51 @@ if(False): print(response.data)
 
 
 
-# Task of function: Return True if webpage contains any word in the list 'words'
-# KESKEN
-# 
+# Load an html page and find strings in it
+# Purpose of function:
+# Return True if webpage contains any word in the search list
+# Needed help from: http://stackoverflow.com/questions/5471158/typeerror-str-does-not-support-the-buffer-interface
 
 def containsWord(url,words):
-    answer=False
+    # Read HTML file into dataString
     http = urllib3.PoolManager()
     response = http.request('GET', url)
-    if(True):
-        with open('index.html', 'wb') as f:
+    dataString=response.data.decode('UTF-8')
+    logging.info('datatype of response.data: %s',type(response.data))
+    logging.info('datatype of dataString: %s',type(dataString))
+    logging.info('dataString(1254): %s',dataString[1254])
+
+    # Write the read data in file
+    if(False):
+        with open('writeoutput.html', 'wb') as f:
             f.write(response.data)
-        response.release_conn()
-    if(False): 
-        print(response.data)
-    print('datatype of response.data:',type(response.data))
 
-    index=response.data.find('Avoimetx')
-    if(index > 0):
-        print('Index:',index)
-        answer=True
-    else:
-        print('Word not found')
+    response.release_conn()
 
+    # Search for the string in the list 'words'
+    answer=False
+    foundIndeces=[]
+    length=len(dataString)
+    for findString in words:
+        index=-1
+        # While-loop, since the same string can exist many times
+        while (True):
+            # index=response.data.find(bytes(findString, 'UTF-8'),index+1,length)
+            index=dataString.find(findString,index+1,length)
+            if (index==-1):
+                break
+            print('String to be found, index:',findString, index)
+            answer=True
+            foundIndeces.append([findString,index])
+
+    # print('List:',foundIndeces)
     return(answer)
     
-url='http://www.kiinteistomaailma.fi/index.html'
-words=('Avoimet','avoimet','Careers','careers')
+#url='http://www.kiinteistomaailma.fi/'
+url='http://www.helsinki.fi/~mohakala/'
+words=('Avoimet','avoimet','Careers','careers','University','Nordlund')
 
-print('Contains:',words,'=',containsWord(url,words))
+print('Webpage contains:',words,'=',containsWord(url,words))
 
 
 
@@ -75,7 +100,7 @@ import simplejson as json
 
 stri='{"type":"fi.prh.opendata.bis","version":"1","totalResults":-1,"resultsFrom":0,"previousResultsUri":null,"nextResultsUri":"http://avoindata.prh.fi/opendata/bis/v1?totalResults=false&maxResults=10&resultsFrom=10&companyRegistrationFrom=2014-02-28","exceptionNoticeUri":null,"results":[{"businessId":"2755076-6","name":"Kainuun AHA-asiantuntijat Oy","registrationDate":"2016-04-02","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2755076-6"},{"businessId":"2755080-3","name":"Kattotyön Tekniikka Oy","registrationDate":"2016-04-02","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2755080-3"},{"businessId":"2755077-4","name":"Waccessory Oy","registrationDate":"2016-04-02","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2755077-4"},{"businessId":"2755078-2","name":"Kärkitimpurit Oy","registrationDate":"2016-04-02","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2755078-2"},{"businessId":"2755067-8","name":"Jesi Verkkokaupat Oy","registrationDate":"2016-04-01","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2755067-8"},{"businessId":"2755018-4","name":"Nokkamiehet Oy","registrationDate":"2016-04-01","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2755018-4"},{"businessId":"2754993-3","name":"Jyränoja Consulting Oy","registrationDate":"2016-04-01","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2754993-3"},{"businessId":"2755022-1","name":"Seloy Live Oy","registrationDate":"2016-04-01","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2755022-1"},{"businessId":"2754876-2","name":"Hyryn Erälomat OY","registrationDate":"2016-04-01","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2754876-2"},{"businessId":"2755038-7","name":"SaimaanKeskus Oy","registrationDate":"2016-04-01","companyForm":"OY","detailsUri":"http://avoindata.prh.fi/opendata/bis/v1/2755038-7"}]}'
 js = json.loads(stri)
-print(js['version'])
+print('version:',js['version'])
 
 
 
@@ -95,7 +120,7 @@ if(False):
 
 import time
 print(time.asctime())
-raw_input('Press Enter')
+input('Press Enter')
 
 
 
