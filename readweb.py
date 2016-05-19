@@ -31,7 +31,31 @@ if(False):
         f.write(response.data)
     response.release_conn()
 if(False): print(response.data)
-        
+
+
+
+# Task of function: Return True if webpage contains any word in the list 'words'
+# KESKEN
+# 
+
+def containsWord(url,words):
+    answer=False
+    http = urllib3.PoolManager()
+    response = http.request('GET', url)
+    if(True):
+        with open('index.html', 'wb') as f:
+            f.write(response.data)
+        response.release_conn()
+    if(False): print(response.data)
+    print('datatype of response.data:',type(response.data))
+    return(answer)
+    
+url='http://www.kiinteistomaailma.fi/index.html'
+words=('Avoimet','avoimet','Careers','careers')
+
+print('Contains:',words,'=',containsWord(url,words))
+
+
 
 
 # Parse JSON from string
