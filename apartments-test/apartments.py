@@ -302,7 +302,8 @@ if __name__ == '__main__':
     # D.4 K-Means 
     # First tests for K-Means
     # http://www.analyticsvidhya.com/blog/2015/08/common-machine-learning-algorithms/
-    
+
+    print('K-Means Clustering')
     predictor_var = ['Huoneet','Talotiedot','m2','Vh','Neliohinta','Rv']
 
     ndf=len(df)
@@ -328,8 +329,9 @@ if __name__ == '__main__':
         plt.show()
 
     # Study the case n_clusters
-    k_means = KMeans(n_clusters=10, random_state=0)
+    k_means = KMeans(n_clusters=3, random_state=0)
     k_means.fit(df[predictor_var].iloc[trainRange,:])
+    if(False): print('Cluster centers:',k_means.cluster_centers_)
     
     # Do some classifications for the test set
     predicted = k_means.predict(df[predictor_var].iloc[testRange,:])
