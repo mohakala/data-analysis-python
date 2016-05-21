@@ -16,7 +16,7 @@ http://nbviewer.jupyter.org/github/temporaer/tutorial_ml_gkbionics/tree/master/
 
 
 # Set the size of the training set and the number of clusters 
-nTrainingSet=10000
+nTrainingSet=1000
 nClusters=20
 
 
@@ -116,6 +116,12 @@ plt.show()
 
 
 
+
+# Some links
+
+# http://www.academia.edu/6509648/Handwritten_Digit_Classification_using_the_MNIST_Data_Set
+# https://github.com/Lasagne/Lasagne/blob/master/examples/mnist.py 
+# http://scikit-learn.org/stable/datasets/mldata.html 
 
 
 
