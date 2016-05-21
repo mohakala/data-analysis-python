@@ -37,20 +37,40 @@ plt.tight_layout()
 plt.show()
 
 
+# Choose and show data to be predicted
+sample=mnist2[2000]
+plt.imshow(sample.reshape(28,28))
+plt.title('Sample to be predicted')
+plt.show()
+
+
+
 # Use K-Means
 kmeans = KMeans(20)
 mu_digits = kmeans.fit(mnist2).cluster_centers_
+mu_lab=kmeans.fit(mnist2).labels_
 
+
+# Prediction based on clusters
+prediction=kmeans.predict(sample)
+print('Prediction: label = ', prediction) 
+
+
+# Show 
 plt.figure(figsize=(16,6))
 for i in range(int(2*(mu_digits.shape[0]/2))): # loop over all means
     plt.subplot(2,mu_digits.shape[0]/2,i+1)
     plt.imshow(mu_digits[i].reshape(28,28))
+    plt.title(mu_lab[i])
     plt.xticks(())
     plt.yticks(())
 plt.tight_layout()
 plt.show()
 
-# KESKEN
+# TO DO MORE: doesn't work yet
+
+
+
 
 
 
