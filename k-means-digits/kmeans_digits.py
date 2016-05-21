@@ -41,16 +41,16 @@ plt.show()
 kmeans = KMeans(20)
 mu_digits = kmeans.fit(mnist2).cluster_centers_
 
-# KESKEN
-
 plt.figure(figsize=(16,6))
-for i in range(2*(mu_digits.shape[0]/2)): # loop over all means
+for i in range(int(2*(mu_digits.shape[0]/2))): # loop over all means
     plt.subplot(2,mu_digits.shape[0]/2,i+1)
     plt.imshow(mu_digits[i].reshape(28,28))
     plt.xticks(())
     plt.yticks(())
 plt.tight_layout()
 plt.show()
+
+# KESKEN
 
 
 
