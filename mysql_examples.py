@@ -12,7 +12,7 @@ def dbAction(sql):
       cursor.execute(sql)
       db.commit()
       data = cursor.fetchall()
-      print('Success executing SQL command') 
+      # print('Success executing SQL command') 
    except:
       # Rollback in case there is any error
       db.rollback()
@@ -61,10 +61,10 @@ print ("Database version : %s " % data)
 
 
 # INSERT
-sql = "xINSERT INTO EMPLOYEE(FIRST_NAME, \
+sql = "INSERT INTO xEMPLOYEE(FIRST_NAME, \
        LAST_NAME, AGE, SEX, INCOME) \
        VALUES ('%s', '%s', '%d', '%c', '%d' )" % \
-       ('Tom', 'Johnson', 56, 'F', 4000)
+       ('Patty', 'Smithson', 20, 'F', 3000)
 data=dbAction(sql)
 
 # SELECT
@@ -87,6 +87,16 @@ sql = "SELECT FIRST_NAME FROM EMPLOYEE WHERE FIRST_NAME LIKE '%o%'"
 data=dbAction(sql)
 print("Data fetched:\n",data)
 
+sql = "SELECT first_name FROM EMPLOYEE WHERE SEX in ('M','F')"
+
+sql = "SELECT * FROM employee WHERE (income BETWEEN 3000 AND 4000) \
+AND NOT sex = 'M'"; 
+
+sql = "SELECT * FROM employee WHERE sex='F' AND (age=31 OR age = 20)";
+
+
+data=dbAction(sql)
+print("Data fetched:\n",data)
 
 
 
