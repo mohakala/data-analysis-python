@@ -77,8 +77,9 @@ sql = "SELECT DISTINCT FIRST_NAME FROM EMPLOYEE"
 data=dbAction(sql)
 print("Data fetched:\n",data)
 
-# SELECT * FROM Customers WHERE Country='Mexico';
+# SELECT
 # http://www.w3schools.com/sql/sql_where.asp
+
 sql = "SELECT INCOME FROM EMPLOYEE WHERE INCOME>2000"
 data=dbAction(sql)
 print("Data fetched:\n",data)
@@ -93,6 +94,11 @@ sql = "SELECT * FROM employee WHERE (income BETWEEN 3000 AND 4000) \
 AND NOT sex = 'M'"; 
 
 sql = "SELECT * FROM employee WHERE sex='F' AND (age=31 OR age = 20)";
+
+# select and order by
+sql = "SELECT * FROM employee ORDER BY income DESC, last_name DESC"
+# DESC == descending order
+
 
 
 data=dbAction(sql)
