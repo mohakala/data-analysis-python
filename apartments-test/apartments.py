@@ -131,6 +131,7 @@ if __name__ == '__main__':
         plt.show()
     
     # C Data munging
+
     # C.1 Missing values in dataset
     lin()
     missValues=df.apply(lambda x: sum(x.isnull()),axis=0)
@@ -142,30 +143,50 @@ if __name__ == '__main__':
     # Generally this needs to be analyzed thoroughly
     df['Kaupunginosa'].fillna('Nurmijarvi', inplace=True)
 
-    # C.3 Extreme values
+    # C.3 Extreme values (not used)
     df['Vh_log'] = np.log(df['Vh'])
     df['Vh_log'].hist(bins=20)
     #plt.show()
 
     
     # D Predictive model
+
+    # D.0 Auxiliary dataframe to encode categorical values to numeric
+    # in a different way. Replace ok --> xok so the numerical sequence
+    # corresponds to kt, rt, xok
+    # Added on 4.6.2016
+    df_aux=df.copy()
+    df_aux['Talotiedot']=df_aux['Talotiedot'].replace({'ok': 'xok'})
     
     # D.1 Encode categorical values to numeric
     var_mod = ['Kaupunginosa','Huoneisto','Talotiedot','Hissi','Kunto']
     le = LabelEncoder()
     for i in var_mod:
         df[i] = le.fit_transform(df[i])
+        df_aux[i] = le.fit_transform(df_aux[i])
     print('new df types:\n',df.dtypes) 
     # what value corresponds to what category?
     TalotiedotName='kt','ot','rt'
     # print(df.head(16))
 
-    # Write to file
+    # Write the numerical tables back to file
     if(False):
         columns_to_file = ['Huoneet','Talotiedot','m2','Vh','Neliohinta','Rv']
         data_to_file=df[columns_to_file].values
         np.savetxt('asunnot_250316_cleaned_numerical.csv', data_to_file, delimiter=',') 
-        
+    if(False):
+        # This file contains also the factor 'Kaupunginosa' 4.6.2013
+        columns_to_file = ['Kaupunginosa','Huoneet','Talotiedot','m2','Vh','Neliohinta','Rv']
+        data_to_file=df[columns_to_file].values
+        np.savetxt('asunnot_250316_cleaned_numerical2.csv', data_to_file, delimiter=',') 
+    if(False):
+        # This file now contains numerical Talotiedot in the order: kt,rt,xok
+        columns_to_file = ['Kaupunginosa','Huoneet','Talotiedot','m2','Vh','Neliohinta','Rv']       
+        data_to_file=df_aux[columns_to_file].values
+        np.savetxt('asunnot_250316_cleaned_numerical3.csv', data_to_file, delimiter=',') 
+        # sys.exit('Stop')
+
+    
 
 
     #
