@@ -157,6 +157,7 @@ if __name__ == '__main__':
     # Added on 4.6.2016
     df_aux=df.copy()
     df_aux['Talotiedot']=df_aux['Talotiedot'].replace({'ok': 'xok'})
+#    sys.exit('Stop')
     
     # D.1 Encode categorical values to numeric
     var_mod = ['Kaupunginosa','Huoneisto','Talotiedot','Hissi','Kunto']
@@ -167,7 +168,11 @@ if __name__ == '__main__':
     print('new df types:\n',df.dtypes) 
     # what value corresponds to what category?
     TalotiedotName='kt','ot','rt'
+    TalotiedotName3='kt','rt','xot'
+    # KaupunginosaName='Alppila','Kirkonkylä','Klaukkala',...,'Rajamäki=10'
+
     # print(df.head(16))
+    
 
     # Write the numerical tables back to file
     if(False):
