@@ -142,6 +142,8 @@ if __name__ == '__main__':
     # Here simply replace by general 'Nurmijarvi'
     # Generally this needs to be analyzed thoroughly
     df['Kaupunginosa'].fillna('Nurmijarvi', inplace=True)
+    # Manual replace
+    # Better ways: learn from http://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/
 
     # C.3 Extreme values (not used)
     df['Vh_log'] = np.log(df['Vh'])
