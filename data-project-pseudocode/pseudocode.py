@@ -34,6 +34,8 @@ def dataPreparation():
     # Get rawdata
     rawdata='../../datasets/nurmijarvi_asunnot_250316.csv'
     df = pd.read_csv(rawdata)
+    print("raw data dataframe size:",df.shape)
+
     print(df.head(2))
 
     # Quick data exploration
@@ -54,21 +56,48 @@ def dataPreparation():
     df = df.drop('Unnamed: 11', 1)
     df = df.drop('Huoneisto', 1)
     df = df.drop('Krs', 1)
+    print(df.head(2))
 
     # Missing values
     missValues=df.apply(lambda x: sum(x.isnull()),axis=0)
     print('Missing values in columns:\n',missValues)
 
+    # Drop instances with missing values
+    dropMissingValues=False
+    if (dropMissingValues):
+        df = df.dropna()
+        missValues=df.apply(lambda x: sum(x.isnull()),axis=0)
+        print('Missing values in columns:\n',missValues)
 
-    print(df.head(2))
+    # Fill categorical missing value in 'Kaupunginosa' with most frequent value
+    # - help from http://stackoverflow.com/questions/25239958/impute-categorical-missing-values-in-scikit-learn
+    fillWithFrequent=True
+    if (fillWithFrequent):
+        fill = df['Kaupunginosa'].value_counts().index[0] # most frequent value
+        df['Kaupunginosa'] = df['Kaupunginosa'].fillna(fill)
 
+    print('Frequency distributions:')
+    print(df['Kaupunginosa'].value_counts())
+
+
+    # Function to show the missing values in the columns
+    def showMissVal(df):
+        missValues=df.apply(lambda x: sum(x.isnull()),axis=0)
+        if (sum(missValues)>0):
+            print('Missing values in columns:\n',missValues)
+        else:
+            print('No missing values in the columns')
+               
+
+    showMissVal(df)
+    print("dataframe size:",df.shape)
 
     return(df)
 
 
 def dataMunging(df):
     # Transform, format, split
-    pass
+    return(df)
 
 
 def modelData(df):
@@ -77,10 +106,9 @@ def modelData(df):
 
 
 if __name__ == '__main__':
-    # Get pandas dataframe
-    df = dataPreparation()
-
+    df = dataPreparation()     # Get pandas dataframe
     dataMunging(df)
+    modelData(df)
 
 
 
