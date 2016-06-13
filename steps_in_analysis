@@ -1,5 +1,6 @@
-Data anaysis project
+Data analysis project
 
+Version 1
 0 Question
 A Get the raw data
 B Clean the data and make the datasets 
@@ -16,4 +17,27 @@ G Test and evaluate the model
 H Use for predictions
 I Put into production
 
+Version 2, Adapted from:
+http://www.slideshare.net/ilganeli/frustrationreduced-pyspark-data-engineering-with-dataframes
 
+0 Question
+
+A Data preparation
+A.1 Ingest
+A.2 Clean
+A.3 Handle erroneous values
+A.4 Handle missing values
+
+B Data munging 
+B.1 Transform
+B.2 Format
+B.3 Split
+
+C Modeling
+C.1 Feature selection / extraction
+C.2 Algorithm selection 
+C.3 Train
+C.4 Test 
+C.5 Validate - to score the model
+
+D Put into production 
