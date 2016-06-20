@@ -41,3 +41,18 @@ C.4 Test
 C.5 Validate - to score the model
 
 D Put into production 
+
+Version 3, CRISP-DM
+Cross Industry Standard Process for Data Mining
+https://en.wikipedia.org/wiki/Cross_Industry_Standard_Process_for_Data_Mining
+
+1. Business understanding
+2. Data understanding
+3. Data preparation
+4. Modeling
+5. Evaluation
+6. Deployment
+
+
+
+
