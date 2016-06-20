@@ -6,12 +6,13 @@ from scipy.stats import linregress
 def lin():
     print('-------------------------------------')
 
-def pcnt(val,ref=0.0):  # return ratio+percentage values as a string    
+def pcnt(val,ref=0.0):
+    # returns ratio + percentage value (two decimals) as a string    
+    # Usage example: print(pcnt(8.0,12.1)) 
     if ref==0.0:
         return(str(val))
     else:
         aux=int(100*val/ref*100.0)/100
-#        st=str(val)+'/'+str(ref)+'='+str(val/ref*100.0)+'%'
         pcntString=str(val)+'/'+str(ref)+'='+str(aux)+'%'
         return(pcntString)
 
