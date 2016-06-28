@@ -58,7 +58,7 @@ def kmeansExample1():
 
 
 def readCSV(fileName):
-    # Reading csv file directly to numeric values
+    # Reading csv file in spark directly to numeric values
     # http://stackoverflow.com/questions/28782940/load-csv-file-with-spark
     sc = SparkContext("local")
     data=sc.textFile(fileName). \
@@ -80,7 +80,8 @@ def kmeansMultid(data,nClusters):
     model = KMeans.train(dataRDD, nClusters, maxIterations=10, initializationMode="random",seed=50, initializationSteps=5, epsilon=1e-4)
     print('Number of clusters:',model.k)
     print('Number of instances for training:',len(data))
-    print('first two lines:',dataRDD.take(2))
+    print('First two lines:',dataRDD.take(2))
+    print('Cluster centers:',model.centers)
     
     
     # Predictions
@@ -114,7 +115,7 @@ if __name__ == '__main__':
         trainRange=np.arange(0,upperlimit)
         trainingSet=df[trainRange,:]
         # Do clustering
-        kmeansMultid(trainingSet,10)
+        kmeansMultid(trainingSet,3)
 
     # Other tests
     if(False):
