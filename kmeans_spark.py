@@ -1,5 +1,4 @@
 """ K-Means clustering
-http://spark.apache.org/docs/latest/mllib-clustering.html#k-means
 http://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.clustering.KMeans
 
 * kmeansOned(fileName):
@@ -27,7 +26,9 @@ import numpy as np
 
 from pyspark.mllib.linalg import Vectors
 
+
 def kmeansOned(fileName,nClusters):
+    # http://spark.apache.org/docs/latest/mllib-clustering.html#k-means
     def error(point):
         center = clusters.centers[clusters.predict(point)]
         return sqrt(sum([x**2 for x in (point - center)]))
@@ -41,6 +42,7 @@ def kmeansOned(fileName,nClusters):
     print("Within Set Sum of Squared Error = " + str(WSSSE))
     sc.stop()
     return()
+
 
 def kmeansExample1():
     # http://spark.apache.org/docs/latest/api/python/pyspark.mllib.html#pyspark.mllib.clustering.KMeans
@@ -71,8 +73,8 @@ def readCSV(fileName):
     print('first two lines:',data.take(2))
     sc.stop()
     return()
-    
 
+    
 def kmeansMultid(data,nClusters):
     # Multicolumnar data as input 
     sc = SparkContext("local")
@@ -82,7 +84,6 @@ def kmeansMultid(data,nClusters):
     print('Number of instances for training:',len(data))
     print('First two lines:',dataRDD.take(2))
     print('Cluster centers:',model.centers)
-    
     
     # Predictions
     case=array([4,2,116,200000,1724,1978])
