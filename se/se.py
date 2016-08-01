@@ -148,12 +148,22 @@ ax.axes.get_xaxis().set_ticks([])
 ax.set_xlabel('Wavelength')
 
 ax=fig.add_subplot(2,2,2)
+ax.plot(x,df[0.1]-ref,'-',x,df[0.5]-ref,'-',x,df[1]-ref,'-',x,df[1.5]-ref,'-',x,df[5]-ref,'-',x,df[10]-ref,'-')
+ax.set_title("Changes in spectra wrt. 0-spectrum")
+#ax.axes.get_xaxis().set_ticks([])
+ax.set_xlabel('Wavelength')
+ax.set_xlim(1820,1890)
+ax.set_ylim(-80,100)
+ax.text(1835, -50, 'zooming into the region of isosbestic points')
+ax.text(1835,-60, 'shows some fluctuations in the sensor data')
+
+ax=fig.add_subplot(2,2,3)
 ax.plot(concAll,arAll,'o')
 #ax.set_xlim(0,10)
 #ax.set_ylim(0,60000)
 ax.set_title("Absolute area difference wrt. 0-spectrum")
 
-ax=fig.add_subplot(2,2,3)
+ax=fig.add_subplot(2,2,4)
 ax.plot(conc,ar,'o',conc,m*conc+b,'k-')
 ax.set_title("Linear fit for concentrations c=0.5 ... 10")
 
