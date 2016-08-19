@@ -4,6 +4,14 @@ import statsmodels.api as sm
 from scipy.stats import linregress
 
 
+def getData(filename):
+    import pandas as pd
+    filename='xxx'
+    df = pd.read_excel(filename)
+    df = pd.read_csv(filename) 
+    return df
+
+
 def quickStudy2(x,y):
     # Descriptive statistics and linear regrsssion
     print('MEAN X = ',x.mean(),'+_',np.std(x, ddof=1)/np.sqrt(len(x)))
@@ -29,12 +37,14 @@ def quickStudy2(x,y):
     xxx = np.concatenate((xx,x2),axis=1)
     results=sm.OLS(y,xxx).fit()
 
+
 def wilcoxon(x,y):
     # Wilcoxon rank-sum test for pairs of samples
     # Are the samples from different or same distribution?
     import scipy
     z_stat, p_val = scipy.stats.ranksums(x,y)  
     print('P-value of ranksumtest=',p_val)
+
 
 def mannWhitney(x,y):
     # Mann-Whitney
@@ -71,13 +81,7 @@ def plotExamples(x,y):
 
     plt.show()
 
-
-    
-    
-
-
-    
-
+ 
 def lin():
     print('-------------------------------------')
 
