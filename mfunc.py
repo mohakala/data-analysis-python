@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.api as sm 
 from scipy.stats import linregress
-
+import sys
+sys.path.insert(0, 'C:\Python34\data-analysis-python')
+#from mfunc import *  # Some own functions
 
 def getData(filename):
     import pandas as pd
