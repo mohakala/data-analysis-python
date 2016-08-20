@@ -7,8 +7,18 @@ import sys
 sys.path.insert(0, 'C:\Python34\data-analysis-python')
 from mfunc import *  # Some own functions
 
+# m inputs
+# n neurons
 
-def trainPerceptron(w,inp,out,target):
+def runPerceptron(inp,w):
+    m=len(w) # inputs
+    n=len(w[0]) # neurons
+    m2=len(inp) # inputs (alternative)
+    print('Inputs:',m2,'Inputs from w:',m,'Neurons:',n)
+    # return(out)
+    
+
+def trainPerceptron(inp,out,target):
     pass
     # set random values for w
     # 
@@ -16,9 +26,11 @@ def trainPerceptron(w,inp,out,target):
 
 
 if __name__ == '__main__':
+    x=np.array([1,0])
 
-    x=np.arange(8)
-    y=np.array([0,1,3,4,5,8,9,10])
+#    w=np.array([[1,0],[2,0],[1,2]]).T
+    w=(np.random.rand(2,3)-+0.5)*0.1
+    runPerceptron(x,w)
 
 
 
