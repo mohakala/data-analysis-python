@@ -64,8 +64,14 @@ class analyzeBinaryPreds(object):
         print(pd.crosstab(self.y_test, self.preds, rownames=['actual'], colnames=['preds']))
         print('accuracy:',self.accuracy)
         print('error:',1.0-self.accuracy)
-        print('true positive rate:',self.tfposneg[0]/self.totalPos)
+        # Recall == True positive rate == Hit rate
+        # == Fraction of 1's predicted correctly, TP /(TP + FN)
+        # == Fraction of documents retrieved relevant to the query
+        print('true positive rate (recall):',self.tfposneg[0]/self.totalPos)
         print('true negative rate:',self.tfposneg[1]/self.totalNeg)
+        # Precision == positive/negative predictive value
+        # == Retrieve n document. How many of them are relevant?
+        # == TP / (TP + FP)
         print('positive precision:',self.tfposneg[0]/(self.tfposneg[0]+self.tfposneg[2]))
         print('negative precision:',self.tfposneg[1]/(self.tfposneg[1]+self.tfposneg[3]))
 

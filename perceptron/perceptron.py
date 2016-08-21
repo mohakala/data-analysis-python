@@ -6,6 +6,11 @@ from scipy.stats import linregress
 import sys
 sys.path.insert(0, 'C:\Python34\data-analysis-python')
 from mfunc import *  # Some own functions
+sys.path.insert(0, 'C:\\Python34\\data-analysis-python\\random-forest-python')
+from rf_titanic import *
+
+print(sys.path)
+
 
 # m inputs
 # n neurons
@@ -57,6 +62,14 @@ if __name__ == '__main__':
     out=runPerceptron(inp,w)
     print('Output:',out)
 
+
+#   Just tests
+    aaatrue=np.array([0,1,0,1])
+    bbbpred=np.array([1,1,1,0])
+
+    instance=analyzeBinaryPreds(aaatrue,bbbpred)   # print(type(instance))
+    instance.calculateResults()
+    instance.showResults()
 
 
 
