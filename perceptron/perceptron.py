@@ -32,31 +32,36 @@ def test_heaviside(): # (call from main)
 
 def runPerceptron(inp,w):
     # inp: column vector, length: m
-    # w: weight matrix m x n
-    # returns: values of the n neurons 0/1 
+    # w: weight matrix m x n for n neurons.
+    # Each neuron gets m input values.
+    # returns: values (0/1) of the n neurons 0/1 
     # print('runPerceptron')
-
-    #print('Inputs:',m2,'Inputs from w:',m,'Neurons:',n)
-    out=np.mat(w.T) * np.mat(inp) # matrix product to get neurons' outputs
+    # matrix product to get neurons' outputs:
+    # y_n = w_nm x inp_m
+    out=np.mat(w.T) * np.mat(inp)
     #print('Aux output:',out)
     return(heaviside(out))
     
 
 def trainPerceptronOneRound(w,inp,target,eta):
     # One round for all input datavectors
+    nInputs=len(inp[0]) # number of inputs
+    nInputDim=len(inp) # dimension of input vector
+    nNeur=len(w[0]) # number of neurons
+
     changeForInputSet=0
-    nInputs=len(inp[0])
     for i_inp in range(nInputs):
         #print('Input datavector:',i_inp)
         oneInput=inp[:,i_inp].reshape((3,1))
         #print('one input:',oneInput)
         out=runPerceptron(oneInput,w)
-        for i in range(3): # update weights of neurons
-            #print('Updating neuron:',i)
-            change=eta*(target[i_inp]-out)*oneInput[i]
-            w[i]=w[i]+change
-            changeForInputSet+=np.absolute(change)
-    print('Change for input set =',changeForInputSet)
+        for i_neur in range(nNeur):
+            for i in range(nInputDim): # update weights of neurons
+                #print('Updating neuron:',i)
+                change=eta*(target[i_neur,i_inp]-out[i_neur])*oneInput[i]
+                w[i,i_neur]=w[i,i_neur]+change
+                changeForInputSet+=np.absolute(change)
+    print('Abs. change for input set =',changeForInputSet)
     return(w,changeForInputSet)
 
 
@@ -74,27 +79,32 @@ def trainPerceptron(w,inp,target,eta):
 if __name__ == '__main__':
     # Parameters and inputs
     inp=np.array([[-1,0,0],[-1,0,1],[-1,1,0],[-1,1,1]]).T
-    # example=np.array([[1,0],[2,0],[1,2]]).T  # 2x3 matrix
-    target=np.array([0,1,1,1])
+    # inp=np.array([[1,0],[2,0],[1,2]]).T  # test, 2x3 matrix
+    target=np.array([[0,1,1,1],[0,1,1,1]]) # one row for each neuron
     eta=0.25 # learning rate
     # w=(np.random.rand(3,1)-0.5)*0.1 # initial random weights
-    w=np.array([[-0.05,-0.02,0.02]]).T
+    # w=np.array([[-0.05,-0.02,0.02]]).T
+    # Book: w=np.array([[-0.05,-0.02,0.02],[-0.05,-0.02,0.02]]).T
+    w=(np.random.rand(3,2)-0.5)*0.1 # initial random weights
+
+    #print('test P:\n',runPerceptron(inp[:,0].reshape((3,1)),w))
 
     # Print information
-    print('System:')
+    print('-- System')
     print('Input:\n',inp,'\nTarget:',target,'Eta:',eta)
     m=len(inp[0]) # number of inputs (rows of w)
     n=len(w[0])   # neurons (columns of w)
-    print('Number of inputs:',m,' neurons:',n)
-    print('Initial weights',w)
+    nInputDim=len(inp)
+    print('Number of inputs:',m,'neurons:',n,'input dim:',nInputDim)
+    print('Initial weights (input dim x neurons):\n',w)
 
     # Train perceptron
-    print('-- train perceptron:')
+    print('-- Train perceptron')
     trainPerceptron(w,inp,target,eta)
-    print('Final weights:',w)
+    print('Final weights:\n',w)
 
     # Check perceptron for the input data
-    print('Check that the perceptron works:')
+    print('-- Check that the perceptron works:')
     for i in range(4):
         print('Input:\n',inp[:,i])
         print('Output:',runPerceptron(inp[:,i].reshape((3,1)),w))
