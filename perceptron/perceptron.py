@@ -11,36 +11,40 @@ from rf_titanic import *  # For confusion matrix
 # print(sys.path)
 
 
-# TODO: More than one neuron
-
 # m inputs
 # n neurons
 
 def heaviside(x):
-    # for an array returns array th:
+    # for an array x returns array y:
     # th_i=1 if x_i > 0, otherwise th_i=0 
-    th=(np.sign(x)+1)/2
-    # must repair the value th=0.5 corresponding to x=0
-    th[th==0.5] = 0
-    return(th)
+    y=(np.sign(x)+1)/2
+    # must repair the value y=0.5 corresponding to x=0
+    y[y==0.5] = 0
+    return(y)
 
 def test_heaviside(): # (call from main)
     test=np.array([-1,-0.01,0,0.02,1])
     print('test heaviside:',test)
     print(heaviside(test))        
 
+def sigmoid(x):
+    beta = 1.0
+    y=1/(1 + exp(-beta * x))
+    return(x)
+
 
 def runPerceptron(inp,w):
     # inp: column vector, length: m
     # w: weight matrix m x n for n neurons.
     # Each neuron gets m input values.
-    # returns: values (0/1) of the n neurons 0/1 
+    # returns: values (0/1) of the n neurons 
     # print('runPerceptron')
     # matrix product to get neurons' outputs:
     # y_n = w_nm x inp_m
     out=np.mat(w.T) * np.mat(inp)
     #print('Aux output:',out)
-    return(heaviside(out))
+    out=heaviside(out)
+    return(out)
     
 
 def trainPerceptronOneRound(w,inp,target,eta):
@@ -50,16 +54,16 @@ def trainPerceptronOneRound(w,inp,target,eta):
     nNeur=len(w[0]) # number of neurons
 
     changeForInputSet=0
-    for i_inp in range(nInputs):
-        #print('Input datavector:',i_inp)
-        oneInput=inp[:,i_inp].reshape((3,1))
-        #print('one input:',oneInput)
+
+    for i_inp in range(nInputs): # Loop over input data
+        oneInput=inp[:,i_inp].reshape((3,1)) # TODO: REPAIR 3,1?
+        # print('one input:',i_inp,oneInput)
         out=runPerceptron(oneInput,w)
-        for i_neur in range(nNeur):
-            for i in range(nInputDim): # update weights of neurons
-                #print('Updating neuron:',i)
-                change=eta*(target[i_neur,i_inp]-out[i_neur])*oneInput[i]
-                w[i,i_neur]=w[i,i_neur]+change
+        for i_neur in range(nNeur): # Loops of neurons
+            for i in range(nInputDim): # Loop over data dimensions
+                error=(target[i_neur,i_inp]-out[i_neur])
+                change=eta*( error )*oneInput[i]
+                w[i,i_neur]=w[i,i_neur]+change # update weights of neurons
                 changeForInputSet+=np.absolute(change)
     print('Abs. change for input set =',changeForInputSet)
     return(w,changeForInputSet)
@@ -70,8 +74,8 @@ def trainPerceptron(w,inp,target,eta):
     while True:
         i+=1
         print('Iteration:',i)
-        w,change = trainPerceptronOneRound(w,inp,target,eta)
-        if (change==0):
+        w,changeBetweenEpochs = trainPerceptronOneRound(w,inp,target,eta)
+        if (changeBetweenEpochs==0):
             break
     return(w)
 
@@ -107,7 +111,7 @@ if __name__ == '__main__':
     print('-- Check that the perceptron works:')
     for i in range(4):
         print('Input:\n',inp[:,i])
-        print('Output:',runPerceptron(inp[:,i].reshape((3,1)),w))
+        print('Output:\n',runPerceptron(inp[:,i].reshape((3,1)),w))
 
     # Another test
     testinput=np.array([-1,0.3,0.3]).reshape(3,1)
