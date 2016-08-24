@@ -69,6 +69,23 @@ def trainPerceptronOneRound(w,inp,target,eta):
     return(w,changeForInputSet)
 
 
+def trainMLPOneRound(v,w,inp,target,eta):
+    # TODO
+    # TODO
+    changeForInputSet=0
+    return(v,w,changeForInputSet)
+
+
+def trainMLP(v,w,inp,target,eta):
+    i=-1
+    while True:
+        i+=1
+        print('Iteration:',i)
+        v,w,changeBetweenEpochs = trainMLPOneRound(v,w,inp,target,eta)
+        if (changeBetweenEpochs==0):
+            break
+    return(v,w)
+
 def trainPerceptron(w,inp,target,eta):
     i=-1
     while True:
@@ -80,7 +97,11 @@ def trainPerceptron(w,inp,target,eta):
     return(w)
 
 
+
 if __name__ == '__main__':
+
+    # A. Perceptron section
+
     # Parameters and inputs
     inp=np.array([[-1,0,0],[-1,0,1],[-1,1,0],[-1,1,1]]).T
     # inp=np.array([[1,0],[2,0],[1,2]]).T  # test, 2x3 matrix
@@ -89,7 +110,14 @@ if __name__ == '__main__':
     # w=(np.random.rand(3,1)-0.5)*0.1 # initial random weights
     # w=np.array([[-0.05,-0.02,0.02]]).T
     # Book: w=np.array([[-0.05,-0.02,0.02],[-0.05,-0.02,0.02]]).T
-    w=(np.random.rand(3,2)-0.5)*0.1 # initial random weights
+
+    # Output layer weights
+    w=(np.random.rand(3,2)-0.5)*0.1  
+
+    # Hidden layer weights
+    v=(np.random.rand(3,2)-0.5)*0.1  
+
+
 
     #print('test P:\n',runPerceptron(inp[:,0].reshape((3,1)),w))
 
@@ -105,7 +133,7 @@ if __name__ == '__main__':
     # Train perceptron
     print('-- Train perceptron')
     trainPerceptron(w,inp,target,eta)
-    print('Final weights:\n',w)
+    print('Output layer final weights:\n',w)
 
     # Check perceptron for the input data
     print('-- Check that the perceptron works:')
@@ -118,7 +146,33 @@ if __name__ == '__main__':
     print('Another test, testinput:\n',testinput,'\n Output:\n',runPerceptron(testinput,w))
 
 
-#   dump, just tests
+
+    # B. MLP section
+
+    # Parameters and inputs
+    inp=np.array([[-1,0,0],[-1,0,1],[-1,1,0],[-1,1,1]]).T
+    target=np.array([[0,1,1,1],[0,1,1,1]]) # one row for each neuron
+    eta=0.25 # learning rate
+
+    # Output layer weights
+    w=(np.random.rand(3,2)-0.5)*0.1  
+    # Hidden layer weights
+    v=(np.random.rand(3,2)-0.5)*0.1  
+
+    # Train MLP
+    print('-- Train MLP')
+    trainMLP(v,w,inp,target,eta)
+    print('Hidden layer v:\n',v)
+    print('Output layer w:\n',w)
+
+
+
+
+
+
+
+
+#   C. dump, just tests
     aaatrue=np.array([0,1,0,1])
     bbbpred=np.array([1,1,1,0])
 
