@@ -29,7 +29,7 @@ def test_heaviside(): # (call from main)
 
 def sigmoid(x):
     beta = 1.0
-    y=1/(1 + exp(-beta * x))
+    y=1/(1 + np.exp(-beta * x))
     return(x)
 
 
@@ -45,6 +45,30 @@ def runPerceptron(inp,w):
     #print('Aux output:',out)
     out=heaviside(out)
     return(out)
+
+def fwdPhase(inp,w,acttype):
+    # Same as runPerceptron, except with 'acttype' added
+    # inp: column vector, length: m
+    # w: weight matrix m x n for n neurons.
+    # Each neuron gets m input values.
+    # returns: values (0/1) of the n neurons 
+    # print('runPerceptron')
+    # matrix product to get neurons' outputs:
+    # y_n = w_nm x inp_m
+    out=np.mat(w.T) * np.mat(inp)
+    #print('Aux output:',out)
+    if (acttype=='step'):
+        out=heaviside(out)
+    elif (acttype=='sigmoid'):
+        out=sigmoid(out)
+    elif (acttype=='linear'):
+        # linear activation, no transformation
+        pass
+    else:
+        sys.exit("Wrong acttype")
+    return(out)
+
+
     
 
 def trainPerceptronOneRound(w,inp,target,eta):
@@ -70,6 +94,19 @@ def trainPerceptronOneRound(w,inp,target,eta):
 
 
 def trainMLPOneRound(v,w,inp,target,eta):
+
+    # Forwards phase
+    hid=fwdPhase(inp[:,0].reshape((3,1)),v,'sigmoid')
+    print('Output at the hidden layer:\n',hid)
+    # must add the -1 bias to use hid as input to output layer
+    inp2=np.array([[-1],hid[0],hid[1]])
+    out=fwdPhase(inp2,w,'sigmoid')
+    print('Output at the output layer:\n',out)
+
+    # Backards phase
+    # TODO
+    # errOut=() ... # do the loops
+        
     # TODO
     # TODO
     changeForInputSet=0
@@ -81,8 +118,8 @@ def trainMLP(v,w,inp,target,eta):
     while True:
         i+=1
         print('Iteration:',i)
-        v,w,changeBetweenEpochs = trainMLPOneRound(v,w,inp,target,eta)
-        if (changeBetweenEpochs==0):
+        v,w,changeBetweenIters = trainMLPOneRound(v,w,inp,target,eta)
+        if (changeBetweenIters==0):
             break
     return(v,w)
 
@@ -91,8 +128,8 @@ def trainPerceptron(w,inp,target,eta):
     while True:
         i+=1
         print('Iteration:',i)
-        w,changeBetweenEpochs = trainPerceptronOneRound(w,inp,target,eta)
-        if (changeBetweenEpochs==0):
+        w,changeBetweenIters = trainPerceptronOneRound(w,inp,target,eta)
+        if (changeBetweenIters==0):
             break
     return(w)
 
@@ -139,7 +176,7 @@ if __name__ == '__main__':
     print('-- Check that the perceptron works:')
     for i in range(4):
         print('Input:\n',inp[:,i])
-        print('Output:\n',runPerceptron(inp[:,i].reshape((3,1)),w))
+        print('Output:\n',fwdPhase(inp[:,i].reshape((3,1)),w,'step'))
 
     # Another test
     testinput=np.array([-1,0.3,0.3]).reshape(3,1)
@@ -154,16 +191,24 @@ if __name__ == '__main__':
     target=np.array([[0,1,1,1],[0,1,1,1]]) # one row for each neuron
     eta=0.25 # learning rate
 
-    # Output layer weights
-    w=(np.random.rand(3,2)-0.5)*0.1  
     # Hidden layer weights
     v=(np.random.rand(3,2)-0.5)*0.1  
+    # Output layer weights
+    w=(np.random.rand(3,2)-0.5)*0.1  
 
     # Train MLP
     print('-- Train MLP')
     trainMLP(v,w,inp,target,eta)
     print('Hidden layer v:\n',v)
     print('Output layer w:\n',w)
+
+    # Running a trained MLP
+    out=fwdPhase(inp[:,0].reshape((3,1)),v,'sigmoid')
+    print('Output at the hidden layer:\n',out)
+    # must add the -1 bias to use out as inp2
+    inp2=np.array([[-1],out[0],out[1]])
+    out2=fwdPhase(inp2,w,'sigmoid')
+    print('Output at the output layer:\n',out2)
 
 
 
