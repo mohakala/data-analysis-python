@@ -85,6 +85,7 @@ def trainPerceptronOneRound(w,inp,target,eta):
         out=runPerceptron(oneInput,w)
         for i_neur in range(nNeur): # Loops of neurons
             for i in range(nInputDim): # Loop over data dimensions
+                # TODO: take this outside the i-loop
                 error=(target[i_neur,i_inp]-out[i_neur])
                 change=eta*( error )*oneInput[i]
                 w[i,i_neur]=w[i,i_neur]+change # update weights of neurons
@@ -94,31 +95,72 @@ def trainPerceptronOneRound(w,inp,target,eta):
 
 
 def trainMLPOneRound(v,w,inp,target,eta):
+    nInputs=len(inp[0]) # number of inputs
+    nInputDim=len(inp) # dimension of input vector
+    nNeurW=len(w[0]) # number of neurons
+    nNeurV=len(v[0]) # number of neurons
 
-    # Forwards phase
-    hid=fwdPhase(inp[:,0].reshape((3,1)),v,'sigmoid')
-    print('Output at the hidden layer:\n',hid)
-    # must add the -1 bias to use hid as input to output layer
-    inp2=np.array([[-1],hid[0],hid[1]])
-    out=fwdPhase(inp2,w,'sigmoid')
-    print('Output at the output layer:\n',out)
-
-    # Backards phase
-    # TODO
-    # errOut=() ... # do the loops
-        
-    # TODO
-    # TODO
     changeForInputSet=0
+
+    for i_inp in range(nInputs): # Loop over input data
+        oneInput=inp[:,i_inp].reshape((nInputDim,1)) 
+
+        # Forward phase
+    
+        hid=fwdPhase(oneInput,v,'sigmoid') # hidden layer
+        #print('Output at the hidden layer:\n',hid)
+        # must add the -1 bias to use hid as input to output layer
+        inp2=np.array([[-1],hid[0],hid[1]])
+        out=fwdPhase(inp2,w,'sigmoid') # output layer
+        #print('Output at the output layer:\n',out)
+
+        # Backard phase
+
+        errOut=np.zeros((nNeurW,1))
+        errHid=np.zeros((nNeurV,1))
+
+        # Error at output layer
+        for i_neurW in range(nNeurW): # Loop over output neurons
+            #print('i_neur:',i_neurW)
+            errOut[i_neurW]=(target[i_neurW,i_inp]-out[i_neurW]) * out[i_neurW] * (1-out[i_neurW])
+        #print('errOut:',errOut)
+
+        # Error at hidden layer
+        for i_neurV in range(nNeurV): # Loop over hidden neurons
+            auxiliarySum=0.0
+            # TODO: Here the sums can be in a more clever way,
+            # TODO: some of the avoided
+            for j_neurW in range(nNeurW):
+                # MUST VERIFY IF THIS i_neurV+1,j_neurW IS CORRECT??
+                auxiliarySum+=w[i_neurV+1,j_neurW]*errOut[j_neurW]
+            errHid[i_neurV]=hid[i_neurV]*(1-hid[i_neurV])*auxiliarySum
+
+        # Update output layer weights
+        for i_neurW in range(nNeurW): # Loop over output neurons
+            change=eta*errOut[i_neurW]*hid[i_neurW]
+            for i in range(nInputDim): # Loop over data dimensions
+                w[i,i_neurW]=w[i,i_neurW]+change
+                changeForInputSet+=np.absolute(change)
+
+        # Update hidden layer weights
+        for i_neurV in range(nNeurV): # Loop over hidden neurons
+            for i in range(nInputDim): # Loop over data dimensions
+                change=eta*errHid[i_neurV]*oneInput[i]
+                w[i,i_neurW]=w[i,i_neurW]+change
+                changeForInputSet+=np.absolute(change)
+             
+            
+        # TODO
+    
     return(v,w,changeForInputSet)
 
 
 def trainMLP(v,w,inp,target,eta):
-    i=-1
+    i=0
     while True:
         i+=1
-        print('Iteration:',i)
         v,w,changeBetweenIters = trainMLPOneRound(v,w,inp,target,eta)
+        print('Iteration:',i,'Change:',changeBetweenIters)
         if (changeBetweenIters==0):
             break
     return(v,w)
