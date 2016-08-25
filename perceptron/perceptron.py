@@ -150,7 +150,7 @@ def trainMLPOneRound(v,w,inp,target,eta):
                 changeForInputSet+=np.absolute(change)
              
             
-        # TODO
+        # TODO SHUFFLE INPUTS, CLEAN
     
     return(v,w,changeForInputSet)
 
@@ -161,7 +161,7 @@ def trainMLP(v,w,inp,target,eta):
         i+=1
         v,w,changeBetweenIters = trainMLPOneRound(v,w,inp,target,eta)
         print('Iteration:',i,'Change:',changeBetweenIters)
-        if (changeBetweenIters==0):
+        if ( (changeBetweenIters<1e-4) or (i>1000) ):
             break
     return(v,w)
 
