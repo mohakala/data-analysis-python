@@ -102,7 +102,12 @@ def trainMLPOneRound(v,w,inp,target,eta):
 
     changeForInputSet=0
 
-    for i_inp in range(nInputs): # Loop over input data
+    # Randomize the order of input vectors
+    inpOrder = list(range(nInputs))
+    np.random.shuffle(inpOrder)
+
+#    for i_inp in range(nInputs): # Loop over input data
+    for i_inp in inpOrder: # Loop over input data
         oneInput=inp[:,i_inp].reshape((nInputDim,1)) 
 
         # Forward phase
