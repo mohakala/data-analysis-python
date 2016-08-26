@@ -168,14 +168,14 @@ def trainMLPOneRound(v,w,inp,target,eta):
     return(v,w,changeForInputSet)
 
 
-def trainMLP(v,w,inp,target,eta,iters):
+def trainMLP(v,w,inp,target,eta,maxIters):
     i=0
     while True:
         i+=1
         v,w,changeBetweenIters = trainMLPOneRound(v,w,inp,target,eta)
-        if (i % 100 == 0):
+        if ( (i % 100 == 0) or (i < 25)):
             print('Iteration:',i,'Change:',changeBetweenIters)
-        if ( (changeBetweenIters<1e-7) or (i>iters) ):
+        if ( (changeBetweenIters<1e-7) or (i>maxIters) ):
             break
     return(v,w)
 
@@ -249,19 +249,18 @@ if __name__ == '__main__':
 
     # Parameters and inputs
     eta = 0.4 # learning rate
-    iters = 10000
+    maxIters = 5000
     
     nNeuronsW = 1 # number of neurons, output layer
     nNeuronsV = 1 # number of neurons, hidden layer
-
-#    target=np.array([[0,1,1,1]]) # OR
+    target=np.array([[0,1,1,1]]) # OR
 
 #    nNeuronsW = 2 # number of neurons, output layer
 #    nNeuronsV = 2 # number of neurons, hidden layer
 #    target=np.array([[0,1,1,1],[0,1,1,1]]) # OR # one row for each neuron
 
 #    target=np.array([[0,1,1,0],[0,1,1,0]]) # XOR
-    target=np.array([[0,1,1,0]]) # XOR
+#    target=np.array([[0,1,1,0]]) # XOR
 #    target=np.array([[0,0,0,1]]) # AND
 
 
@@ -282,10 +281,12 @@ if __name__ == '__main__':
     v=(np.random.rand(nInputDim,nNeuronsV)-0.5)*0.1  
 #    w=(np.random.rand(nInputDim,nNeuronsW)-0.5)*0.1  
     w=(np.random.rand(nNeuronsV+1,nNeuronsW)-0.5)*0.1  
+    print('Initial:\nHidden layer v:\n',v)
+    print('Output layer w:\n',w)
 
     # Train MLP
     print('-- Train MLP')
-    trainMLP(v,w,inp,target,eta,iters)
+    trainMLP(v,w,inp,target,eta,maxIters)
     print('Results:\nHidden layer v:\n',v)
     print('Output layer w:\n',w)
 
