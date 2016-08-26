@@ -28,7 +28,7 @@ def test_heaviside(): # (call from main)
     print(heaviside(test))        
 
 def sigmoid(x):
-    beta = 1.0
+    beta = 0.05
     y=1/(1 + np.exp(-beta * x))
     return(x)
 
@@ -110,11 +110,13 @@ def trainMLPOneRound(v,w,inp,target,eta):
         hid=fwdPhase(oneInput,v,'sigmoid') # hidden layer
         #print('Output at the hidden layer:\n',hid)
         # must add the -1 bias to use hid as input to output layer
-        inp2=np.array([[-1],hid[0],hid[1]])
-        out=fwdPhase(inp2,w,'sigmoid') # output layer
+        hidWithBias=np.array([[-1],hid[0],hid[1]])
+#        hidWithBias=np.array([[-1],hid[0]]) # For one neuron
+        #print(hidWithBias,'\n',w)
+        out=fwdPhase(hidWithBias,w,'sigmoid') # output layer
         #print('Output at the output layer:\n',out)
 
-        # Backard phase
+        # Backward phase
 
         errOut=np.zeros((nNeurW,1))
         errHid=np.zeros((nNeurV,1))
@@ -131,22 +133,23 @@ def trainMLPOneRound(v,w,inp,target,eta):
             # TODO: Here the sums can be in a more clever way,
             # TODO: some of the avoided
             for j_neurW in range(nNeurW):
-                # MUST VERIFY IF THIS i_neurV+1,j_neurW IS CORRECT??
+                # notice: w[i_neurV+1,j_neurW], because bias is not
+                # and must not be included
                 auxiliarySum+=w[i_neurV+1,j_neurW]*errOut[j_neurW]
             errHid[i_neurV]=hid[i_neurV]*(1-hid[i_neurV])*auxiliarySum
 
         # Update output layer weights
         for i_neurW in range(nNeurW): # Loop over output neurons
-            change=eta*errOut[i_neurW]*hid[i_neurW]
             for i in range(nInputDim): # Loop over data dimensions
-                w[i,i_neurW]=w[i,i_neurW]+change
+                change=eta*errOut[i_neurW]*hidWithBias[i]
+                w[i,i_neurW]=w[i,i_neurW]-change
                 changeForInputSet+=np.absolute(change)
 
         # Update hidden layer weights
         for i_neurV in range(nNeurV): # Loop over hidden neurons
             for i in range(nInputDim): # Loop over data dimensions
                 change=eta*errHid[i_neurV]*oneInput[i]
-                w[i,i_neurW]=w[i,i_neurW]+change
+                w[i,i_neurV]=w[i,i_neurV]-change
                 changeForInputSet+=np.absolute(change)
              
             
@@ -176,9 +179,8 @@ def trainPerceptron(w,inp,target,eta):
     return(w)
 
 
-
-if __name__ == '__main__':
-
+def perceptronSection():
+    # MORE LIKE TESTS, RAW VERSION
     # A. Perceptron section
 
     # Parameters and inputs
@@ -226,31 +228,52 @@ if __name__ == '__main__':
 
 
 
+if __name__ == '__main__':
+
+    # A. Perceptron section
+    # perceptronSection()
+
+
     # B. MLP section
 
+    # TODO: To not need to include -1's in the input
+    # TODO: Also one neuron or more than two neurons
+    # TODO: Shuffle
+    
+    nNeuronsW = 2 # number of neurons, output layer
+    nNeuronsV = 2 # number of neurons, hidden layer
+    
     # Parameters and inputs
-    inp=np.array([[-1,0,0],[-1,0,1],[-1,1,0],[-1,1,1]]).T
-    target=np.array([[0,1,1,1],[0,1,1,1]]) # one row for each neuron
     eta=0.25 # learning rate
+    inp=np.array([[-1,0,0],[-1,0,1],[-1,1,0],[-1,1,1]]).T  
 
-    # Hidden layer weights
-    v=(np.random.rand(3,2)-0.5)*0.1  
-    # Output layer weights
-    w=(np.random.rand(3,2)-0.5)*0.1  
+    nInputs=len(inp[0]) # number of inputs
+    nInputDim=len(inp) # dimension of input vector
+
+#    target=np.array([[0,1,1,1],[0,1,1,1]]) # OR # one row for each neuron
+    target=np.array([[0,1,1,0],[0,1,1,0]]) # XOR
+#    target=np.array([[0,1,1,1]]) # OR
+#    target=np.array([[0,1,1,0]]) # XOR
+
+
+    # Hidden and output layer weights
+    v=(np.random.rand(nInputDim,nNeuronsV)-0.5)*0.1  
+    w=(np.random.rand(nInputDim,nNeuronsW)-0.5)*0.1  
 
     # Train MLP
     print('-- Train MLP')
     trainMLP(v,w,inp,target,eta)
-    print('Hidden layer v:\n',v)
+    print('Results:\nHidden layer v:\n',v)
     print('Output layer w:\n',w)
 
-    # Running a trained MLP
-    out=fwdPhase(inp[:,0].reshape((3,1)),v,'sigmoid')
-    print('Output at the hidden layer:\n',out)
-    # must add the -1 bias to use out as inp2
-    inp2=np.array([[-1],out[0],out[1]])
-    out2=fwdPhase(inp2,w,'sigmoid')
-    print('Output at the output layer:\n',out2)
+    # Running a trained MLP over the input vectors
+    for i_inp in range(nInputs):
+        out=fwdPhase(inp[:,i_inp].reshape((nInputDim,1)),v,'sigmoid')
+        # print('Output at the hidden layer:\n',out)
+        # must add the -1 bias to use out as inp2
+        inp2=np.array([[-1],out[0],out[1]])
+        out2=fwdPhase(inp2,w,'sigmoid')
+        print('Inp, Output at the output layer:',i_inp,'\n',out2)
 
 
 
