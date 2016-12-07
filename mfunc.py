@@ -81,6 +81,8 @@ def plotExamples(x,y):
     plt.hist(y,2)
     ax.set_title('Histogram')   
 
+# http://matplotlib.org/users/tight_layout_guide.html    
+    plt.tight_layout()
     plt.show()
 
  
