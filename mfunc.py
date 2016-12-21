@@ -61,6 +61,10 @@ def plotExamples(x,y):
     import numpy as np
     import matplotlib.pyplot as plt
 
+# Tune markersizes
+#    plt.rcParams['lines.markersize'] = 10
+
+    
     m,b=np.polyfit(x,y,1)
 
     fig=plt.figure()
