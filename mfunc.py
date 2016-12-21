@@ -68,6 +68,7 @@ def plotExamples(x,y):
 
     ax=fig.add_subplot(2,2,1)
     ax.plot(x,y,'o',x,m*x+b,'-')
+    # , label="Fe"
     ax.plot(x,np.ones((x.size,1)),'--')
     ax.text(1.1, 5, 'text in fig.') 
     # ax.set_yscale('log')
@@ -76,7 +77,8 @@ def plotExamples(x,y):
     ax.set_ylim(limits[0],limits[1])
     ax.set_xlabel('xlabel')
     ax.set_ylabel('ylabel')
-
+    # ax.legend()
+    
     ax=fig.add_subplot(2,2,2)
     plt.hist(y,2)
     ax.set_title('Histogram')   
