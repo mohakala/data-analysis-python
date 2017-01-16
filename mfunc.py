@@ -82,7 +82,9 @@ def plotExamples(x,y):
     ax.set_xlabel('xlabel')
     ax.set_ylabel('ylabel')
     # ax.legend()
-    
+    boxAxes=False
+    if(boxAxes): ax.set_aspect(1./ax.get_data_ratio())
+
     ax=fig.add_subplot(2,2,2)
     plt.hist(y,2)
     ax.set_title('Histogram')   
