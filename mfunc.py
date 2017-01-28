@@ -61,6 +61,10 @@ def plotExamples(x,y):
     import numpy as np
     import matplotlib.pyplot as plt
 
+# Tune markersizes
+#    plt.rcParams['lines.markersize'] = 10
+
+    
     m,b=np.polyfit(x,y,1)
 
     fig=plt.figure()
@@ -68,6 +72,7 @@ def plotExamples(x,y):
 
     ax=fig.add_subplot(2,2,1)
     ax.plot(x,y,'o',x,m*x+b,'-')
+    # , label="Fe"
     ax.plot(x,np.ones((x.size,1)),'--')
     ax.text(1.1, 5, 'text in fig.') 
     # ax.set_yscale('log')
@@ -76,6 +81,9 @@ def plotExamples(x,y):
     ax.set_ylim(limits[0],limits[1])
     ax.set_xlabel('xlabel')
     ax.set_ylabel('ylabel')
+    # ax.legend()
+    boxAxes=False
+    if(boxAxes): ax.set_aspect(1./ax.get_data_ratio())
 
     ax=fig.add_subplot(2,2,2)
     plt.hist(y,2)
