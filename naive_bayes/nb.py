@@ -41,7 +41,6 @@ def exploreData(df):
     print(df.describe())
     print("Data types in df:\n",df.dtypes)
     print('Frequency distributions:')
-    print(df.value_counts())
 
 df = getData('../../datasets/iris.data')
 exploreData(df)

@@ -89,11 +89,20 @@ if __name__ == '__main__':
 
     # B Exploratory analysis    
     # B.1 Quick data exploration
-    print(df.head(16))
+
+    def exploreData(df):
+        print(df.head(16))
+        print(df.describe())
+        print("Data types in df:\n",df.dtypes)
+
+    #print(df.head(16))
+    #lin()
+    #print(df.describe())
+    #lin()
+    #print("Data types in df:\n",df.dtypes)
+
     lin()
-    print(df.describe())
-    lin()
-    print("Data types in df:\n",df.dtypes)
+    exploreData(df)
     lin()
     print('Frequency distributions:')
     print(df['Kaupunginosa'].value_counts())
