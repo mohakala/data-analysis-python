@@ -21,6 +21,35 @@ print(predicted)
 
 
 
+#import pandas as pd
+#person = pd.read_csv(‘example.csv’)
+#mask = np.random.rand(len(sales)) < 0.8
+#train = sales[mask]
+#test = sales[~mask]
+
+
+# Iris dataset
+
+import pandas as pd
+
+def getData(rawdata):
+    df = pd.read_csv(rawdata) 
+    return df
+
+def exploreData(df):
+    print(df.head(16))
+    print(df.describe())
+    print("Data types in df:\n",df.dtypes)
+    print('Frequency distributions:')
+    print(df.value_counts())
+
+df = getData('../../datasets/iris.data')
+exploreData(df)
+
+
+
+
+
 
 
 
