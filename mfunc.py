@@ -14,6 +14,55 @@ def getData(filename):
     return df
 
 
+def correlationTests():
+    """
+    Introductino to Correlation
+         https://www.datascience.com/blog/introduction-to-correlation-learn-data-science-tutorials
+    Pearson correlation coefficient
+    Spearman's rank correlatino coefficient
+    Kendall's tau: directional agreement (concordant pairs)
+    """
+    import pandas as pd
+    print('Correlation tests (www.datascience.com/...)')
+
+    # Example 1
+    k = pd.DataFrame()
+    k['X'] = np.arange(5)+1
+    k['Y'] = [7, 5,1, 6, 9]
+    print('Kendall:\n',k.corr(method='kendall'))
+    print('Pearson:\n',k.corr())
+
+    # Example 2
+    path = 'http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data'
+    mpg_data = pd.read_csv(path, delim_whitespace=True, header=None,
+            names = ['mpg', 'cylinders', 'displacement','horsepower',
+            'weight', 'acceleration', 'model_year', 'origin', 'name'],
+            na_values='?')
+    mpg_data.info()
+
+    print('Correlation between mpg and weight, Pearson:')
+    print(mpg_data['mpg'].corr(mpg_data['weight']))
+    # pairwise correlation
+    print(mpg_data.drop(['model_year', 'origin'], axis=1).corr(method='pearson'))
+
+    # Plot
+    import matplotlib.pyplot as plt
+    plt.rcParams['figure.figsize'] = [16, 6]
+    fig, ax = plt.subplots(nrows=1, ncols=3)
+    ax=ax.flatten()
+    cols = ['weight', 'horsepower', 'acceleration']
+    colors=['#415952', '#f35134', '#243AB5', '#243AB5']
+    j=0
+    for i in ax:
+        if j==0:
+            i.set_ylabel('MPG')
+        i.scatter(mpg_data[cols[j]], mpg_data['mpg'],  alpha=0.5, color=colors[j])
+        i.set_xlabel(cols[j])
+        i.set_title('Pearson: %s'%mpg_data.corr().loc[cols[j]]['mpg'].round(2)+' Spearman: %s'%mpg_data.corr(method='spearman').loc[cols[j]]['mpg'].round(2))
+        j+=1
+    plt.show()
+
+
 def quickStudy2(x,y):
     # Descriptive statistics and linear regrsssion
     print('MEAN X = ',x.mean(),'+_',np.std(x, ddof=1)/np.sqrt(len(x)))
@@ -131,6 +180,8 @@ if __name__ == '__main__':
     wilcoxon(x,y)
     mannWhitney(x,y)
 
+    correlationTests()
+    
 
 
 
