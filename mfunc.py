@@ -157,6 +157,9 @@ def plotExamples(x,y):
     fig=plt.figure()
     fig.suptitle('Overall title',fontsize=14, fontweight='bold')
 
+    # Dense grid from xmin ... xmax:
+    # xx=np.linspace(np.min(x),np.max(x),50) # start, end, linspace
+
     ax=fig.add_subplot(2,2,1)
     ax.plot(x,y,'o',x,m*x+b,'-')
     # , label="Xx"
