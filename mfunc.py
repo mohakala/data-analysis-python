@@ -7,6 +7,9 @@ sys.path.insert(0, 'C:\Python34\data-analysis-python')
 #from mfunc import *  # Some own functions
 
 def getData(filename):
+    """
+    Different ways to read a datafile
+    """
     import pandas as pd
     filename='xxx'
     df = pd.read_excel(filename)
@@ -88,6 +91,18 @@ def quickStudy2(x,y):
     xxx = np.concatenate((xx,x2),axis=1)
     results=sm.OLS(y,xxx).fit()
 
+def r2values(x,y,ypred,p):
+    # http://stackoverflow.com/questions/893657/how-do-i-calculate-r-squared-using-python-and-numpy
+    # Returns the values of r2 and adjusted r2
+    yave=np.mean(y)
+    ssreg = np.sum((ypred-yave)**2)   
+    sstot = np.sum((y - yave)**2) 
+    ssres = np.sum((ypred-y)**2)
+    r2 = ssreg / sstot        # or: r2 = 1-(ssres/sstot))
+    n=len(y) 
+    r2adj = 1- ( (ssres/(n-p-1)) / (sstot/(n-1)) ) 
+    return(r2,r2adj)
+
 
 def wilcoxon(x,y):
     # Wilcoxon rank-sum test for pairs of samples
@@ -103,16 +118,39 @@ def mannWhitney(x,y):
     import scipy
     z_stat, p_val = scipy.stats.mannwhitneyu(x, y, 'two-sided')
     print('P-value of Mann-Whitney=',p_val)
+
+
+def kluvut(x):
+    # http://papers.mpastell.com/scipy_opas.pdf    
+    keskiarvo = np.mean(x)
+    otoskeskihajonta = np.std(x, ddof=1)
+    n = max(x.shape)
+    keskivirhe = keskihajonta/np.sqrt(n)
+    return(keskiarvo, otoskeskihajonta, keskivirhe)
+
+
+def numpyExamples(x,y):
+    # Numpy examples and plot
+    m=np.polyfit(x,y,5)
+    poly = np.poly1d(m)
+    ypred=poly(x) # or:
+    ypred=np.poly1d(m)(x)
     
+    fig=plt.figure()
+    plt.plot(x, y, 'o')    # Original data
+    xx=np.linspace(np.min(x),np.max(x),50) # Dense grid. start, end, number
+    plt.plot(xx, np.poly1d(m)(xx),'-')
+    plt.show()
+
+
 
 def plotExamples(x,y):
-# plot examples 
+    # Some plotting examples 
     import numpy as np
     import matplotlib.pyplot as plt
 
-# Tune markersizes
-#    plt.rcParams['lines.markersize'] = 10
-
+    # Tune markersizes
+    # plt.rcParams['lines.markersize'] = 10
     
     m,b=np.polyfit(x,y,1)
 
@@ -121,7 +159,7 @@ def plotExamples(x,y):
 
     ax=fig.add_subplot(2,2,1)
     ax.plot(x,y,'o',x,m*x+b,'-')
-    # , label="Fe"
+    # , label="Xx"
     ax.plot(x,np.ones((x.size,1)),'--')
     ax.text(1.1, 5, 'text in fig.') 
     # ax.set_yscale('log')
@@ -156,13 +194,7 @@ def pcnt(val,ref=0.0):
         pcntString=str(val)+'/'+str(ref)+'='+str(aux)+'%'
         return(pcntString)
 
-def kluvut(x):
-# http://papers.mpastell.com/scipy_opas.pdf    
-    keskiarvo = np.mean(x)
-    otoskeskihajonta = np.std(x, ddof=1)
-    n = max(x.shape)
-    keskivirhe = keskihajonta/np.sqrt(n)
-    return(keskiarvo, otoskeskihajonta, keskivirhe)
+
 
 def pcntval(val,ref):
     return(val/ref*100)
@@ -181,7 +213,17 @@ if __name__ == '__main__':
     mannWhitney(x,y)
 
     correlationTests()
-    
+    numpyExamples(x,y)    
+
+    # Get r2 and adjusted r2 values
+    # example case
+    m=np.polyfit(x,y,4) 
+    poly = np.poly1d(m)
+    ypred=poly(x)
+    deg=len(m)-1
+    r2, r2adj = r2values(x,y,ypred,deg)
+    print('r2 for the fit:',r2)
+    print('Adjusted r2 for the fit:',r2adj,'degree of polynomial:',deg)
 
 
 
