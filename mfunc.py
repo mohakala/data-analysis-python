@@ -10,12 +10,21 @@ def getData(filename):
     """
     Different ways to read a datafile
     """
+    # Without pandas
+
+    # With pandas
     import pandas as pd
     filename='xxx'
     df = pd.read_excel(filename)
     df = pd.read_csv(filename) 
     return df
 
+def listModules():
+    # http://stackoverflow.com/questions/739993/how-can-i-get-a-list-of-locally-installed-python-modules
+    import pip
+    installed_packages = pip.get_installed_distributions()
+    installed_packages_list = sorted(["%s==%s" % (i.key, i.version) for i in installed_packages])
+    print(installed_packages_list)
 
 def correlationTests():
     """
