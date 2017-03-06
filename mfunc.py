@@ -163,6 +163,17 @@ def numpyExamples(x,y):
 # plt.xticks(())
 # plt.yticks(())
 
+def plotImages();
+# image, 784 points, plot to wubfigures without labels
+    plt.rc("image", cmap="binary") # use black/white palette for plotting
+    for i in range(10):
+        plt.subplot(2,5,i+1)
+        plt.imshow(X_digits[i].reshape(28,28))
+        plt.xticks(())
+        plt.yticks(())
+    plt.tight_layout()
+
+
 
 def plotExamples(x,y):
     # Some plotting examples 
