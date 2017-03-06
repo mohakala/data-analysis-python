@@ -152,6 +152,10 @@ def numpyExamples(x,y):
     plt.show()
 
 
+    
+##### Plot examples #####    
+# s0100 markersize:
+# plt.scatter(mu[:,0], mu[:,1], s=100, c=np.unique(Y_hat))
 
 def plotExamples(x,y):
     # Some plotting examples 
