@@ -16,8 +16,14 @@ def getData(filename):
     import pandas as pd
     filename='xxx'
     df = pd.read_excel(filename)
+    path = 'ftp://ftp....'
+    path = 'C://Python34/...'
+    # Read the n:th sheet of excel-file, n=0,1,...
+    df = pd.read_excel(path,sheetname=1,header=None) 
+      
     df = pd.read_csv(filename) 
     return df
+
 
 def listModules():
     # http://stackoverflow.com/questions/739993/how-can-i-get-a-list-of-locally-installed-python-modules
