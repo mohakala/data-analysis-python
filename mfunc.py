@@ -157,10 +157,18 @@ def numpyExamples(x,y):
     plt.plot(xx, np.poly1d(m)(xx),'-')
     plt.show()
 
-
+"""
 ##############################################################    
 ##### Plot examples #####    
 ##############################################################    
+"""
+
+def plot1(df):
+    import matplotlib.pyplot as plt
+    fig=plt.figure()
+    plt.scatter(df[0], df[1])
+    plt.plot(df[0], df[1], 'o-')
+    plt.show()
 
 # s0100 markersize:
 # plt.scatter(mu[:,0], mu[:,1], s=100, c=np.unique(Y_hat))
