@@ -177,7 +177,7 @@ def plot1(df):
 # plt.xticks(())
 # plt.yticks(())
 
-def plotImages();
+def plotImages():
 # image, 784 points, plot to wubfigures without labels
     plt.rc("image", cmap="binary") # use black/white palette for plotting
     for i in range(10):

@@ -6,10 +6,10 @@ from scipy import stats
 
 import sys
 sys.path.insert(0, 'C:\Python34\data-analysis-python')
-from mfunc import *
+
+from mfunc import lin
 
 from sklearn.preprocessing import LabelEncoder
-
 from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import KFold   #For K-fold cross validation
 from sklearn.ensemble import RandomForestClassifier
@@ -22,7 +22,7 @@ from random import randint
 """ Follow
 http://www.analyticsvidhya.com/blog/2016/01/complete-tutorial-learn-data-science-python-scratch-2
 
-# We have:
+# Features:
 # Kaupunginosa,Huoneet,Talotiedot(kt,ot,rt),
 # m2,Vh,Neliohinta,Rv,Hissi,Kunto
 
@@ -73,7 +73,7 @@ def classification_model(model, data, predictors, outcome):
  
     print("Cross-Validation Score : %s" % "{0:.3%}".format(np.mean(error)))
 
-    #Fit the model again so that it can be refered outside the function:
+    #Fit the model again so that it can be referred outside the function:
     model.fit(data[predictors],data[outcome]) 
 
 
@@ -89,17 +89,10 @@ if __name__ == '__main__':
 
     # B Exploratory analysis    
     # B.1 Quick data exploration
-
     def exploreData(df):
-        print(df.head(16))
+        print(df.head(5))
         print(df.describe())
         print("Data types in df:\n",df.dtypes)
-
-    #print(df.head(16))
-    #lin()
-    #print(df.describe())
-    #lin()
-    #print("Data types in df:\n",df.dtypes)
 
     lin()
     exploreData(df)
@@ -109,9 +102,10 @@ if __name__ == '__main__':
     print(df['Talotiedot'].value_counts())
     print(df['Kunto'].value_counts())
 
+
     # B.2 Distribution analysis
-    fig=plt.figure()
     if(False):
+        fig=plt.figure()
         df['Vh'].hist(bins=20)
         plt.title('Vh')
         #plt.show()
