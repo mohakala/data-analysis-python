@@ -15,3 +15,7 @@ print('statsmodels: %s' % statsmodels.__version__)
 # scikit-learn
 import sklearn
 print('sklearn: %s' % sklearn.__version__)
+
+# theano
+import theano
+print('theano: %s' % theano.__version__)
