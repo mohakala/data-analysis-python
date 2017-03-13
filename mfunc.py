@@ -19,9 +19,11 @@ def getData(filename):
     path = 'ftp://ftp....'
     path = 'C://Python34/...'
     # Read the n:th sheet of excel-file, n=0,1,...
-    df = pd.read_excel(path,sheetname=1,header=None) 
+    df = pd.read_excel(path, sheetname=1, header=None) 
       
     df = pd.read_csv(filename) 
+    df = pd.read_csv(path, header=None, names=['X1', 'X2', 'Y'])
+
     return df
 
 
