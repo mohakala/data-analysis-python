@@ -212,34 +212,8 @@ def dataMunging(df):
     return(df, TalotiedotName)
 
 
-if __name__ == '__main__':
 
-    # A Get the data
-    rawdata='../../datasets/nurmijarvi_asunnot_250316.csv'
-    df=getData(rawdata)
-    print("raw data dataframe size:",df.shape)
-
-    # B Exploratory analysis    
-    exploratory(df)
-    
-    # C Data munging
-    df, TalotiedotName = dataMunging(df)
-    # What type corresponds to what numerical category?
-    # TalotiedotName = 'kt','ot','rt'
-    print('TalotiedotName:', TalotiedotName)
-
-
-    # D Predictive models
-
-    # Task: Määritä talotieto (kt,ot,rt) annetun muuttujan perusteella.
-    outcome_var = 'Talotiedot'
-    print('outcome_var:', outcome_var)
-    lin()
-
-    # Features:
-    # Kaupunginosa,Huoneet,Talotiedot,
-    # m2,Vh,Neliohinta,Rv,Hissi,Kunto
-
+def multiclassClassification(df, outcome_var):
 
     # D.2 Logistic regression
     model = LogisticRegression()
@@ -373,16 +347,49 @@ if __name__ == '__main__':
     print('Best for now:')
     ne, mss, md, mf = 80, 18, 10, 1
     print('RandomForestClassifier')
-    model = RandomForestClassifier(n_estimators=ne,min_samples_split=mss,max_depth=md,max_features=mf)
+    model = RandomForestClassifier(n_estimators=ne, min_samples_split=mss, max_depth=md, max_features=mf)
     predictor_var = ['m2','Vh','Hissi','Rv']
     print(predictor_var)
     classification_model(model, df,predictor_var,outcome_var)
   
-    # Make predictions:
-    features=(86,170000,0,1987)
-    prediction=model.predict(features)
+    # Make predictions for the previous model:
+    features = (86, 170000, 0, 1987)
+    prediction = model.predict(features)
     print('Predict:',features,' Talotiedot:',TalotiedotName[prediction])
     lin()
+
+    return()
+
+
+if __name__ == '__main__':
+
+    # A Get the data
+    rawdata='../../datasets/nurmijarvi_asunnot_250316.csv'
+    df=getData(rawdata)
+    print("raw data dataframe size:",df.shape)
+
+    # B Exploratory analysis    
+    exploratory(df)
+    
+    # C Data munging
+    df, TalotiedotName = dataMunging(df)
+    # What type corresponds to what numerical category?
+    # TalotiedotName = 'kt','ot','rt'
+    print('TalotiedotName:', TalotiedotName)
+
+
+    # D Predictive models for mujlticlass classification
+
+    # Task: Määritä talotieto (kt,ot,rt) annetun muuttujan perusteella.
+    outcome_var = 'Talotiedot'
+    print('outcome_var:', outcome_var)
+    lin()
+    # Features available: Kaupunginosa, Huoneet, Talotiedot,
+    #                     m2, Vh, Neliohinta, Rv, Hissi, Kunto
+
+
+    multiclassClassification(df, outcome_var)
+
 
 
     input("\nPress Enter to continue")
