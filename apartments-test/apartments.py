@@ -115,7 +115,7 @@ def exploratory(df):
         plt.show()
 
     if(False):
-        fig=plt.figure()
+        plt.figure()
         df['Vh'].hist(bins=20)
         plt.title('Vh')
         plt.show()
@@ -184,7 +184,8 @@ def dataMunging(df):
     for i in var_mod:
         df[i] = le.fit_transform(df[i])
         df_aux[i] = le.fit_transform(df_aux[i])
-    print('new df types:\n',df.dtypes) 
+    if(False):
+        print('new df types:\n',df.dtypes) 
 
     TalotiedotName='kt','ot','rt'
     # KaupunginosaName='Alppila','Kirkonkylä','Klaukkala',...,'Rajamäki=10'
@@ -213,7 +214,7 @@ def dataMunging(df):
 
 
 
-def multiclassClassification(df, outcome_var):
+def multiclassClassification(df, predictor_var, outcome_var):
 
     # D.2 Logistic regression
     model = LogisticRegression()
@@ -361,6 +362,9 @@ def multiclassClassification(df, outcome_var):
     return()
 
 
+def linearRegression(df, predictor_var, outcome_var):
+    pass
+
 if __name__ == '__main__':
 
     # A Get the data
@@ -378,7 +382,7 @@ if __name__ == '__main__':
     print('TalotiedotName:', TalotiedotName)
 
 
-    # D Predictive models for mujlticlass classification
+    # D Predictive models for multiclass classification
 
     # Task: Määritä talotieto (kt,ot,rt) annetun muuttujan perusteella.
     outcome_var = 'Talotiedot'
@@ -387,19 +391,28 @@ if __name__ == '__main__':
     # Features available: Kaupunginosa, Huoneet, Talotiedot,
     #                     m2, Vh, Neliohinta, Rv, Hissi, Kunto
 
-
-    multiclassClassification(df, outcome_var)
-
+    classification = False
+    if(classification):
+        multiclassClassification(df, outcome_var)
 
 
     input("\nPress Enter to continue")
     print('-----------\n')
 
 
+    # D2 Predictive models for Vh: TODO
+    regression = True
+    if(regression):
+        print('D2 Linear regression for Vh')
+        predictor_var = ['Huoneet','m2','Kaupunginosa','Rv','Hissi','Vh','Neliohinta']
+        outcome_var = 'Vh'
+        linearRegression(df, predictor_var, outcome_var)
+
+    pass
 
 
     # D.4 K-Means 
-    # First tests for K-Means
+    # Tests for K-Means
     # http://www.analyticsvidhya.com/blog/2015/08/common-machine-learning-algorithms/
 
     print('K-Means Clustering')
@@ -457,6 +470,8 @@ if __name__ == '__main__':
     # To continue...
 
     
+    
+    print("Finish")
 
 
     
