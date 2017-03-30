@@ -2,8 +2,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-
-
 """
 # Study Gaussian Process Regression
 """
@@ -58,8 +56,8 @@ from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
 kernel = C(1.0) * RBF(10, (1e-1, 1e2))
 
 print('Kernel information for checking:')
-testC = C(1.0, (1e-3, 1e3))
-testRBF = RBF(10, (1e-2, 1e2))
+testC = C(1.0)
+testRBF = RBF(10, (1e-1, 1e2))
 print(testC.get_params())
 print(testRBF.get_params())
 
