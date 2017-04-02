@@ -38,7 +38,8 @@ def main():
     # Set indices for train, validate, test split
     ind = [234, 294]
     ml.set_new(target, features, ind)
-
+    print('Correlation matrix')
+    print(ml.df[features].corr())
 
 
     from sklearn import neighbors
