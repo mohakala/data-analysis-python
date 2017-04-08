@@ -2,7 +2,7 @@
 """
 Created on Sun Apr  2 15:26:57 2017
 
-@author: mhaa
+@author: mikko hakala
 """
 
 #import numpy as np
@@ -24,42 +24,71 @@ def main():
     ml.getData(path)
 
     print('Missing values in columns:\n', ml.missingValues())
-    ml.fillMissing('Kaupunginosa')
-    ml.randomizeRows()
+    ml.fillMissingCategorical('Kaupunginosa')
+    ml.randomizeRows(0)
 
     print(ml.df.head())
     print('Missing values in columns:\n', ml.missingValues())
     ml.examine()    
 
-
-        
+    # Set features and target 
     features = ['Huoneet', 'm2', 'Rv']
-    target = 'Vh'
+    target = ['Vh']
+    allfeatures = target + features
+
     # Set indices for train, validate, test split
+    # - total data length: 326
     ind = [234, 294]
     ml.set_new(target, features, ind)
+
     print('Correlation matrix')
-    print(ml.df[features].corr())
+    print(ml.df[allfeatures].corr())
+
+
+    # Train, validate, test various models
+    
+    
 
 
     from sklearn import neighbors
-    weights = 'uniform'     #  'uniform' or 'distance'
-    n_neighbors = 3
-    knn = neighbors.KNeighborsRegressor(n_neighbors, weights=weights)
-    ml.score(knn)
-    ml.score_print()
+    # weights = 'uniform'     #  'uniform' or 'distance'
+    weights = 'distance'     #  'uniform' or 'distance'
+    for n_neighbors in (range(1, 8)):
+        print('\n\nneighbors:', n_neighbors)
+        model = neighbors.KNeighborsRegressor(n_neighbors, weights=weights)
+        ml.score(model)
+        ml.score_print()
+    print('found best CV w/ 5 neighbors, dist,. criterion = 71.9 (better) and uniform')
+    
     
     
     from sklearn import linear_model
-    linmod = linear_model.LinearRegression()
-    ml.score(linmod)
+    model = linear_model.LinearRegression()
+    ml.score(model)
+    ml.score_print()
+    ml.print_coef()
+
+
+    from sklearn import tree
+    model = tree.DecisionTreeRegressor()
+    ml.score(model)
+    ml.score_print()
+    ml.print_coef()
+
+
+    from sklearn import ensemble 
+    model = ensemble.RandomForestRegressor()
+    ml.score(model)
     ml.score_print()
 
 
+    
 
 
-    print('------------')
-    print('Done')
+
+
+
+    print('------------\nDone')
 
 
 
