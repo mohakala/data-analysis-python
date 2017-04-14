@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 """
 
 
-def plotGPRresults(gp, X, y, xtest, ytest_true=0, dy=0):
+def plotGPRresults(gp, X, y, xtest=0, ytest_true=0, dy=0):
     """
     Plot results for the gp model (one-dimensional data X)
     dy = error in the training data
@@ -30,48 +30,71 @@ def plotGPRresults(gp, X, y, xtest, ytest_true=0, dy=0):
     if(np.sum(ytest_true) != 0):  
         plt.plot(xtest, ytest_true, 'r:', label='true function')
     
-    plt.xlabel('X')
-    plt.ylabel('y')
-    plt.ylim(-10, 20)
+    plt.xlabel('coordinate')
+    plt.ylabel('energy')
+    plt.ylim(np.min(y)*0.9, np.max(y)*1.1)
     plt.legend()
     plt.show()
 
 
 
-# A. Dataponts without noise
-
-# Training data
-X = np.atleast_2d([1, 5, 6, 7, 8, 10]).T
-
 def function(X):
     return (np.sin(1.5*X)*0.5*X).ravel()
 
+
+
+# A. Datapoints without noise
+
+# Training data
+X = np.atleast_2d([1, 5, 6, 7, 8, 10]).T 
 y = function(X).ravel()
 
+# Another data
+X1 = np.linspace(-4, 5, 10).reshape(-1,1)
+y1 = np.array([1, 1.8, 3.2, 3.9, 4.5, 4.7, 3.3, 2.9, 2.0, 1.3]).ravel()
+
+X = X1
+y = y1
+
+print(X)
+print(y)                 
+ 
+                 
 
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
 
+
 # Choose kernel
 kernel = C(1.0) * RBF(10, (1e-1, 1e2))
 
-print('Kernel information for checking:')
+
+print('Kernel information:')
 testC = C(1.0)
 testRBF = RBF(10, (1e-1, 1e2))
 print(testC.get_params())
 print(testRBF.get_params())
 
+# Target's known noise level
+alpha = 0.1
 
 # Fit the hyperparameters
-gp = GaussianProcessRegressor(kernel=kernel)
+gp = GaussianProcessRegressor(kernel=kernel, alpha=alpha, n_restarts_optimizer=10)
 gp.fit(X, y)
 print('\nOptimized kernel:', gp.kernel_)
 
 
-# Plot predictions with a dense x-mesh
+# Plot predictions 
 xtest = np.atleast_2d(np.linspace(0, 10, 100)).T
 ytest_true = function(xtest)
-plotGPRresults(gp, X, y, xtest, ytest_true)
+
+# Plot predictions, data 2
+xtest = np.atleast_2d(np.linspace(-5, 5, 50)).T
+
+
+#plotGPRresults(gp, X, y, xtest, ytest_true)
+plotGPRresults(gp, X, y, xtest)
+
 
 
 # B. Datapoints with noise
@@ -83,15 +106,15 @@ y = y + noise
 
 kernel = C(1.0) * RBF(10, (0.5, 1e2))  ## 0.5? study more
 
-# To study: result as a function of regularization parameter alpha
+# To study: result as a function of regularization parameter (noise level)  alpha
 alpha = 0.2
-gp = GaussianProcessRegressor(kernel=kernel, alpha=alpha)
+gp = GaussianProcessRegressor(kernel=kernel, alpha=alpha, n_restarts_optimizer=10)
 gp.fit(X, y)
 print('\nOptimized kernel:', gp.kernel_)
 print('Alpha:', gp.alpha_)
 
 
-# Plot predictions with dense x-mesh
+# Plot predictions
 xtest = np.atleast_2d(np.linspace(0, 10, 100)).T
 ytest_true = function(xtest)
 plotGPRresults(gp, X, y, xtest, ytest_true, dy)
