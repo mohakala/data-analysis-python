@@ -22,7 +22,6 @@ def study_knn(ml):
         print('\n\nneighbors:', n_neighbors)
         model = neighbors.KNeighborsRegressor(n_neighbors, weights=weights)
         ml.score(model)
-        ml.score_print()
     print('found best CV w/ 5 neighbors, dist,. criterion = 71.9 (better) and uniform')
 
 
@@ -30,7 +29,6 @@ def study_linreg(ml):
     from sklearn import linear_model
     model = linear_model.LinearRegression()
     ml.score(model)
-    ml.score_print()
     ml.print_coef()
 
 
@@ -38,7 +36,6 @@ def study_decisionTree(ml):
     from sklearn import tree
     model = tree.DecisionTreeRegressor()
     ml.score(model)
-    ml.score_print()
     ml.print_coef()
 
 
@@ -46,7 +43,7 @@ def study_randomForest(ml):
     from sklearn import ensemble 
     model = ensemble.RandomForestRegressor()
     ml.score(model)
-    ml.score_print()
+    # ml.score_print()
 
 
 
@@ -60,7 +57,7 @@ def main():
     ml.fillMissingCategorical('Kaupunginosa')
     ml.randomizeRows(0)
 
-    print(ml.df.head())
+    print(ml.df.head(3))
     print('Missing values in columns:\n', ml.missingValues())
     ml.examine()    
 
@@ -80,7 +77,6 @@ def main():
 
 
     # Study various models
-    
     print("\n*K nearest neighbors")
     study_knn(ml)
     
@@ -94,8 +90,13 @@ def main():
 #    study_randomForest(ml)
 
 
-
-
+    # Test score for knn
+    print("\n*Test score for decision tree")
+    from sklearn import neighbors
+    n_neighbors=5
+    model = neighbors.KNeighborsRegressor(n_neighbors, weights='distance')
+    ml.score(model, iprint=0)
+    ml.score_print(printTestScore=True)
 
 
 
