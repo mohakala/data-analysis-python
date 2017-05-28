@@ -14,11 +14,44 @@ sys.path.insert(0, 'C:\Python34')
 from mlproject import mlproject as mlp
 
 
+def study_knn(ml):
+    from sklearn import neighbors
+    # weights = 'uniform'     #  'uniform' or 'distance'
+    weights = 'distance'     #  'uniform' or 'distance'
+    for n_neighbors in (range(1, 7)):
+        print('\n\nneighbors:', n_neighbors)
+        model = neighbors.KNeighborsRegressor(n_neighbors, weights=weights)
+        ml.score(model)
+        ml.score_print()
+    print('found best CV w/ 5 neighbors, dist,. criterion = 71.9 (better) and uniform')
+
+
+def study_linreg(ml):
+    from sklearn import linear_model
+    model = linear_model.LinearRegression()
+    ml.score(model)
+    ml.score_print()
+    ml.print_coef()
+
+
+def study_decisionTree(ml):
+    from sklearn import tree
+    model = tree.DecisionTreeRegressor()
+    ml.score(model)
+    ml.score_print()
+    ml.print_coef()
+
+
+def study_randomForest(ml):
+    from sklearn import ensemble 
+    model = ensemble.RandomForestRegressor()
+    ml.score(model)
+    ml.score_print()
 
 
 
-def main():
-    
+def main():    
+    # Load data
     ml = mlp.mlproject()
     path = 'C:/Python34/datasets/nurmijarvi_asunnot_250316.csv'
     ml.getData(path)
@@ -39,50 +72,28 @@ def main():
     # Set indices for train, validate, test split
     # - total data length: 326
     ind = [234, 294]
-    ml.set_new(target, features, ind)
+    ml.set_xy(target, features, ind)
 
+    # Correlation matrix
     print('Correlation matrix')
     print(ml.df[allfeatures].corr())
 
 
-    # Train, validate, test various models
+    # Study various models
     
+    print("\n*K nearest neighbors")
+    study_knn(ml)
     
-
-
-    from sklearn import neighbors
-    # weights = 'uniform'     #  'uniform' or 'distance'
-    weights = 'distance'     #  'uniform' or 'distance'
-    for n_neighbors in (range(1, 8)):
-        print('\n\nneighbors:', n_neighbors)
-        model = neighbors.KNeighborsRegressor(n_neighbors, weights=weights)
-        ml.score(model)
-        ml.score_print()
-    print('found best CV w/ 5 neighbors, dist,. criterion = 71.9 (better) and uniform')
+    print("\n*Linear regression")
+    study_linreg(ml)
     
-    
-    
-    from sklearn import linear_model
-    model = linear_model.LinearRegression()
-    ml.score(model)
-    ml.score_print()
-    ml.print_coef()
+    print("\n*Decision tree")
+    study_decisionTree(ml)
+
+#    print("Random Forest")
+#    study_randomForest(ml)
 
 
-    from sklearn import tree
-    model = tree.DecisionTreeRegressor()
-    ml.score(model)
-    ml.score_print()
-    ml.print_coef()
-
-
-    from sklearn import ensemble 
-    model = ensemble.RandomForestRegressor()
-    ml.score(model)
-    ml.score_print()
-
-
-    
 
 
 
