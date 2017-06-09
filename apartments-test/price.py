@@ -125,7 +125,7 @@ def study_nn(ml):
     # .. params:  [[ 20489.955   1260.256   1232.52 ]]
 
     ## A. Single-layer perceptron (slp) 
-    make_slp = True
+    make_slp = False
     if(make_slp):    
         W = tf.Variable(tf.zeros([A, B]))
         # W from ordinary linear fit
@@ -140,8 +140,10 @@ def study_nn(ml):
 
 
     ## B. Multilayer perceptron
-    make_mlp = False
+    make_mlp = True
     if(make_mlp):
+        print("--Note: As the network is now, unstable test set, maybe overfits")
+        print("--Note: Try dropout etc.")
         # Variables
         A = A
         K = 200
@@ -167,8 +169,6 @@ def study_nn(ml):
         #Y = tf.nn.softmax(tf.matmul(Y4, W5) + B5)
         Y = tf.matmul(Y4, W5) + B5
 
-    # Initialize
-    init = tf.global_variables_initializer()
 
     batch_size = 234
     
@@ -184,8 +184,15 @@ def study_nn(ml):
     sstot = tf.reduce_sum(tf.squared_difference(Y_, tf.reduce_mean(Y_)))
     
     # Training step and optimizer
-    learning_rate = 0.2   # was: 0.005
-    train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+    learning_rate = 0.002   # was: 0.005
+ #   train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+    train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+    print("--Note: AdamOptimizer much faster than GradientDescent!")
+
+    # Initialize
+    init = tf.global_variables_initializer()
+
+
 
     def r2_value(ssres, sstot):
         return(1.0 - (ssres/sstot))
@@ -200,7 +207,7 @@ def study_nn(ml):
             yield inputs[indices_batch], targets[indices_batch]
 
     # Training loop
-    num_steps=200000
+    num_steps=20000
 
     sess = tf.Session()
     sess.run(init)
@@ -287,6 +294,7 @@ def main():
     study_standard_ml(ml)
 
     # Study neural network
+    print("---------------------------------------------")
     print("\n*Study simple neural network for regression")
     study_nn(ml)
 
