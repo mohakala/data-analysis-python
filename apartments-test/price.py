@@ -140,7 +140,7 @@ def study_nn(ml):
 
 
     ## B. Multilayer perceptron
-    make_mlp = True
+    make_mlp = False
     if(make_mlp):
         print("--Note: As the network is now, unstable test set, maybe overfits")
         print("--Note: Try dropout etc.")
@@ -167,7 +167,34 @@ def study_nn(ml):
         Y3 = tf.nn.relu(tf.matmul(Y2, W3) + B3)
         Y4 = tf.nn.relu(tf.matmul(Y3, W4) + B4)
         #Y = tf.nn.softmax(tf.matmul(Y4, W5) + B5)
-        Y = tf.matmul(Y4, W5) + B5
+        pkeep = 0.75
+        Y5 = tf.nn.dropout(Y4, pkeep)
+        Y = tf.matmul(Y5, W5) + B5
+
+    ## C. Light multilayer perceptron
+    make_mlp = True
+    if(make_mlp):
+        print('Lightweight MLP')
+        # Variables
+        A = A
+        K = 200
+        L = 100
+        M = 60
+        N = 30
+        O = B
+        W1 = tf.Variable(tf.truncated_normal([A, K], stddev=0.1))
+        B1 = tf.Variable(tf.zeros([K]))
+        W2 = tf.Variable(tf.truncated_normal([K, N], stddev=0.1))
+        B2 = tf.Variable(tf.zeros([N]))
+        W5 = tf.Variable(tf.truncated_normal([N, O], stddev=0.1))
+        B5 = tf.Variable(tf.zeros([O]))
+        # Model
+        Y1 = tf.nn.relu(tf.matmul(X, W1) + B1)
+        Y2 = tf.nn.relu(tf.matmul(Y1, W2) + B2)
+        pkeep = 0.75
+        Y5 = tf.nn.dropout(Y2, pkeep)
+        Y = tf.matmul(Y5, W5) + B5
+
 
 
     batch_size = 234
@@ -184,11 +211,13 @@ def study_nn(ml):
     sstot = tf.reduce_sum(tf.squared_difference(Y_, tf.reduce_mean(Y_)))
     
     # Training step and optimizer
-    learning_rate = 0.002   # was: 0.005
- #   train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+    learning_rate = 0.0002   # was: 0.005
+    # To try: learning rate decay
+    # train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
     print("--Note: AdamOptimizer much faster than GradientDescent!")
 
+    
     # Initialize
     init = tf.global_variables_initializer()
 
@@ -207,7 +236,10 @@ def study_nn(ml):
             yield inputs[indices_batch], targets[indices_batch]
 
     # Training loop
-    num_steps=20000
+    num_steps=30000
+
+    # Store data on RMSE accuracy and loss
+    metrics = []
 
     sess = tf.Session()
     sess.run(init)
@@ -219,7 +251,7 @@ def study_nn(ml):
 
             
         # Print accuracy 
-        if(i%500==0):
+        if(i%500==0 and i>0):
             # Training set
             acc = sess.run(rmse, feed_dict=train_data)
             ssres_, sstot_ = sess.run([ssres, sstot], feed_dict=train_data)
@@ -231,6 +263,8 @@ def study_nn(ml):
             ssres_, sstot_ = sess.run([ssres, sstot], feed_dict=test_data)
             r2_test = r2_value(ssres_, sstot_)
 
+            metrics.append([i, r2, r2_test, acc_test*max_values[0]])
+
             # Print variables during training
             #w_ = sess.run(W)
             #b_ = sess.run(b)
@@ -240,7 +274,11 @@ def study_nn(ml):
             print('i, r2, r2_test, rmse_test', i, r2, r2_test, acc_test*max_values[0])
             
 
-
+    # Plot metrics
+    metrics=np.array(metrics)
+    print(metrics)
+    ml.plot(metrics[:, 0], metrics[:, 1], metrics[:, 0], metrics[:, 2])
+    ml.plot(metrics[:, 0], metrics[:, 3])
 
     # Finally, rescale all data back to original values 
     print('*Rescaling the features back to original values')
