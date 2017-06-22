@@ -20,70 +20,85 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
 
-def study_knn(ml):
-    from sklearn import neighbors
-    # weights = 'uniform'     #  'uniform' or 'distance'
-    weights = 'distance'     #  'uniform' or 'distance'
-    for n_neighbors in (range(1, 7)):
-        print('\n\nneighbors:', n_neighbors)
-        model = neighbors.KNeighborsRegressor(n_neighbors, weights=weights)
-        ml.score(model)
-    print('found best CV w/ 5 neighbors, dist,. criterion = 71.9 (better) and uniform')
-
-
-def study_linreg(ml):
-    from sklearn import linear_model
-    model = linear_model.LinearRegression()
-    ml.score(model, iprint=4)
-    ml.print_coef()
-
-
-def study_decisionTree(ml):
-    from sklearn import tree
-    model = tree.DecisionTreeRegressor()
-    ml.score(model)
-    ml.print_coef()
-
-
-def study_randomForest(ml):
-    from sklearn import ensemble 
-    model = ensemble.RandomForestRegressor()
-    ml.score(model)
-    # ml.score_print()
-
-
 def study_standard_ml(ml):
-    # Set features and target 
     features = ['Huoneet', 'm2', 'Rv']
-    #features = ['m2']
     target = ['Vh']
-    allfeatures = target + features
+    # allfeatures = target + features
 
     # Set indices for train, validate, test split
     # - total data length: 326
     ind = [234, 294]
     ml.set_xy(target, features, ind)
 
-
-    print("*K nearest neighbors")
+    print("\n*K nearest neighbors")
     study_knn(ml)
     
-    print("*Linear regression")
+    print("\n*Linear regression")
     study_linreg(ml)
     
-    print("*Decision tree")
+    print("\n*Decision tree")
     study_decisionTree(ml)
 
-#    Some problems with random forest
-#    print("Random Forest")
-#    study_randomForest(ml)
+    print("\n*Skipping Random Forest. To do: fix the warnings") 
+    # study_randomForest(ml)
 
-    # Test score for knn
-    print("**Test score for decision tree")
+
+
+def study_knn(ml):
     from sklearn import neighbors
-    n_neighbors=5
-    model = neighbors.KNeighborsRegressor(n_neighbors, weights='distance')
+
+    print_results = False
+    if(print_results):
+        iprint=1
+    else:
+        iprint=0
+
+    weights = 'distance'
+    for n_neighbors in (range(3, 16)):
+        if(print_results):
+            print('\nneighbors:', n_neighbors, 'weights:', weights)
+        model = neighbors.KNeighborsRegressor(n_neighbors, weights=weights)
+        ml.score(model, iprint=iprint)
+    print('\nWeights =', weights)
+    print('Best CV w/ 11 neighbors:')
+    model = neighbors.KNeighborsRegressor(n_neighbors=11, weights=weights)
     ml.score(model, iprint=0)
+    ml.score_print(printTestScore=True)
+
+    
+    weights = 'uniform'
+    for n_neighbors in (range(3, 11)):
+        if(print_results):
+            print('\nneighbors:', n_neighbors, 'weights:', weights)
+        model = neighbors.KNeighborsRegressor(n_neighbors, weights=weights)
+        ml.score(model, iprint=iprint)
+    print('\nWeights =', weights)
+    print('Best CV w/ 5 neighbors:')
+    model = neighbors.KNeighborsRegressor(n_neighbors=5, weights=weights)
+    ml.score(model, iprint=0)
+    ml.score_print(printTestScore=True)
+
+
+def study_linreg(ml):
+    from sklearn import linear_model
+    model = linear_model.LinearRegression()
+    ml.score(model, iprint=0)
+    ml.print_coef()
+    ml.score_print(printTestScore=True)
+
+
+def study_decisionTree(ml):
+    from sklearn import tree
+    model = tree.DecisionTreeRegressor()
+    ml.score(model, iprint=0)
+    ml.print_coef()
+    ml.score_print(printTestScore=True)
+
+
+def study_randomForest(ml):
+    from sklearn import ensemble 
+    model = ensemble.RandomForestRegressor()
+    ml.score(model)
     ml.score_print(printTestScore=True)
 
 
@@ -292,7 +307,6 @@ def study_nn(ml):
 
 
 def main():    
-    # Load data
     ml = mlp.mlproject()
     path = 'C:/Python34/datasets/nurmijarvi_asunnot_250316.csv'
     ml.getData(path)
@@ -306,32 +320,35 @@ def main():
     print('---')
 
     print('Missing values in columns:\n', ml.missingValues())
-    print('Filling missing value in Kaupunginosa with the most popular one')
-    ml.fillMissingCategorical('Kaupunginosa')
+    print('Missing values in Kaupunginosa:', sum( ml.df['Kaupunginosa'].isnull() ) )
+    print('Rows with missing Kaupunginosa:')
+    print(ml.df[ml.df['Kaupunginosa'].isnull()])
+
+    method_to_fillna = 'random'
+    print('Filling missing value in Kaupunginosa with:', method_to_fillna)
+    ml.fillMissingCategorical('Kaupunginosa', method=method_to_fillna)
     print('---')
 
+
     print('Randomizing the rows of the dataframe')
-    ml.randomizeRows(0)
+    ml.randomizeRows(seed=0)
 
     print(ml.df.head(3))
     print('Missing values in columns:\n', ml.missingValues())
     ml.examine()    
 
     # TODO: Encode kaup.osa into features
-    # Max Vh
-    max_y = np.max(ml.df['Vh'])
-    print('max Vh:', max_y, 'euro')
 
-    # Correlation matrix
-    print('Correlation matrix')
-    # print(ml.df[allfeatures].corr())
+    Vh_max = np.max(ml.df['Vh'])
+    print('max Vh:', Vh_max, 'euro')
+
+    print('Correlation matrix:')
     print(ml.df.corr())
 
-    # Study standard ML models
+    print("---------------------------------------------")
     print("\n*Study standard ML models")
     study_standard_ml(ml)
 
-    # Study neural network
     print("---------------------------------------------")
     print("\n*Study simple neural network for regression")
     study_nn(ml)
