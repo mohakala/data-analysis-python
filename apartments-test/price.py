@@ -230,7 +230,7 @@ def study_nn(ml):
     # To try: learning rate decay
     # train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
-    print("--Note: AdamOptimizer much faster than GradientDescent!")
+    print("--Note: AdamOptimizer can be much faster than GradientDescent!")
 
     
     # Initialize
