@@ -62,7 +62,7 @@ def study_knn(ml):
     print('\nWeights =', weights)
     print('Best CV w/ 11 neighbors:')
     model = neighbors.KNeighborsRegressor(n_neighbors=11, weights=weights)
-    ml.score(model, iprint=0)
+    ml.score(model, iprint=4)
     ml.score_print(printTestScore=True)
 
     
@@ -82,7 +82,7 @@ def study_knn(ml):
 def study_linreg(ml):
     from sklearn import linear_model
     model = linear_model.LinearRegression()
-    ml.score(model, iprint=0)
+    ml.score(model, iprint=4)
     ml.print_coef()
     ml.score_print(printTestScore=True)
 
@@ -129,6 +129,7 @@ def study_nn(ml):
     # Some sizes of vectors (features and targets) 
     A = ml.Xtest.shape[1]
     B = ml.ytest.shape[1]
+    print('ml.Xtest.shape:', ml.Xtest.shape)
     
     # Placeholders and variables
     X = tf.placeholder(tf.float32, [None, A])
@@ -140,7 +141,7 @@ def study_nn(ml):
     # .. params:  [[ 20489.955   1260.256   1232.52 ]]
 
     ## A. Single-layer perceptron (slp) 
-    make_slp = False
+    make_slp = True
     if(make_slp):    
         W = tf.Variable(tf.zeros([A, B]))
         # W from ordinary linear fit
@@ -182,12 +183,12 @@ def study_nn(ml):
         Y3 = tf.nn.relu(tf.matmul(Y2, W3) + B3)
         Y4 = tf.nn.relu(tf.matmul(Y3, W4) + B4)
         #Y = tf.nn.softmax(tf.matmul(Y4, W5) + B5)
-        pkeep = 0.75
+        pkeep = 0.80
         Y5 = tf.nn.dropout(Y4, pkeep)
         Y = tf.matmul(Y5, W5) + B5
 
     ## C. Light multilayer perceptron
-    make_mlp = True
+    make_mlp = False
     if(make_mlp):
         print('Lightweight MLP')
         # Variables
@@ -206,13 +207,16 @@ def study_nn(ml):
         # Model
         Y1 = tf.nn.relu(tf.matmul(X, W1) + B1)
         Y2 = tf.nn.relu(tf.matmul(Y1, W2) + B2)
-        pkeep = 0.75
+        pkeep = 1.0
         Y5 = tf.nn.dropout(Y2, pkeep)
         Y = tf.matmul(Y5, W5) + B5
 
 
-
-    batch_size = 234
+    # Batch size
+    # batch_size = np.int(ml.Xtest.shape[0]/2.0)
+    batch_size = 234   # total train size
+    #batch_size = 117
+    print('Batch size:', batch_size)
     
     # https://stackoverflow.com/questions/33846069/how-to-set-rmse-cost-function-in-tensorflow
     # Loss function
@@ -224,13 +228,42 @@ def study_nn(ml):
     rmse  = tf.sqrt(tf.reduce_mean(tf.squared_difference(Y_, Y)))
     ssres = tf.reduce_sum(tf.squared_difference(Y_, Y))
     sstot = tf.reduce_sum(tf.squared_difference(Y_, tf.reduce_mean(Y_)))
+    mae = tf.reduce_mean(tf.abs(Y_- Y))
+
+
+    # Number of epochs
+
+    # num_steps=12730 # looks good for light MLP
+    # num_steps=12350 # 
+    num_steps=40000 
     
-    # Training step and optimizer
-    learning_rate = 0.0002   # was: 0.005
+    
+    # Optimizer
+    
+    """
+    OPTIMIZER
+    IG:
+    Currently actively in use: SGD, SGD+mom, RMSProp, RMSProp+mom, AdaDelta, Adam
+    Choice depends on user'f familiarity of algorithm and hyperpar tuning 
+    Adam fairly robust to choice of hyperparameter
+    """
+    learning_rate = 0.01   # was: 0.005
     # To try: learning rate decay
-    # train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+
+    # RMSProp
+    #train_step = tf.train.RMSPropOptimizer(learning_rate).minimize(loss)
+    
+    # AdaGrad
+    #train_step = tf.train.AdagradOptimizer(learning_rate).minimize(loss)
+    
+    # Gradient descent and with momentum
+    #train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+    #momentum_rate=0.9
+    #train_step = tf.train.MomentumOptimizer(learning_rate, momentum_rate).minimize(loss)
+
+    # Adam 
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
-    print("--Note: AdamOptimizer can be much faster than GradientDescent!")
+    #print("--Note: AdamOptimizer can be much faster than GradientDescent!")
 
     
     # Initialize
@@ -250,8 +283,8 @@ def study_nn(ml):
             indices_batch = indices[i: i + batch_size]
             yield inputs[indices_batch], targets[indices_batch]
 
+
     # Training loop
-    num_steps=30000
 
     # Store data on RMSE accuracy and loss
     metrics = []
@@ -266,19 +299,20 @@ def study_nn(ml):
 
             
         # Print accuracy 
-        if(i%500==0 and i>0):
-            # Training set
-            acc = sess.run(rmse, feed_dict=train_data)
+        if(i%500==0 and i>0 or i==100 or i==num_steps):
+            # Use all data points in training set
+            train_data={X: ml.Xtrain, Y_: ml.ytrain}
             ssres_, sstot_ = sess.run([ssres, sstot], feed_dict=train_data)
             r2 = r2_value(ssres_, sstot_)
-            test_data = {X: ml.Xtest, Y_: ml.ytest}
             
-            # Test set
-            acc_test, loss_test = sess.run([rmse, loss], feed_dict=test_data)
-            ssres_, sstot_ = sess.run([ssres, sstot], feed_dict=test_data)
-            r2_test = r2_value(ssres_, sstot_)
+            # Validation set
+            val_data = {X: ml.Xval, Y_: ml.yval}
+            acc_val, loss_val = sess.run([rmse, loss], feed_dict=val_data)
+            ssres_, sstot_ = sess.run([ssres, sstot], feed_dict=val_data)
+            r2_val = r2_value(ssres_, sstot_)
 
-            metrics.append([i, r2, r2_test, acc_test*max_values[0]])
+            # Add to list results: index, r2_train, r2_test, rmse
+            metrics.append([i, r2, r2_val, acc_val*MaxVh])
 
             # Print variables during training
             #w_ = sess.run(W)
@@ -286,8 +320,15 @@ def study_nn(ml):
             #wreal = w_ * max_values[1:4].reshape(-1, 1)
             #print('W, b, r, r2_test2', wreal.reshape(1, -1), b_, r2, r2_test)
             #print(i, 'Acc (rmse, r2):', acc*MaxVh, r2, ' Test data (rmse, loss):', acc_test*MaxVh, loss_test)
-            print('i, r2, r2_test, rmse_test', i, r2, r2_test, acc_test*max_values[0])
+            print('i, r2, r2_val, rmse_test', i, r2, r2_val, acc_val*MaxVh)
             
+    # Final round
+    test_data = {X: ml.Xtest, Y_: ml.ytest}
+    acc_test, mae_test = sess.run([rmse, mae], feed_dict=test_data)
+    ssres_, sstot_ = sess.run([ssres, sstot], feed_dict=test_data)
+    r2_test = r2_value(ssres_, sstot_)
+    print('Final test data r2:', r2_test)
+    print('RMSE:', acc_test*MaxVh, 'MAE:', mae_test*MaxVh)
 
     # Plot metrics
     metrics=np.array(metrics)
@@ -303,7 +344,39 @@ def study_nn(ml):
     #print(ml.df.head())
 
     #assert False
-    
+
+def print_results_for_reference():
+    print('Linear regression:')
+    print('- R2 0.668, R2 valid 0.504, Cross-val 0.63+-0.19, R2 test 0.791')
+    print('SLP the samem batch 234:')
+    print('--> 17 k Adam(0.01) ok')
+    print('--> 17 k Adam(0.3) is noisy')
+    print('--> 40 k grad(0.3)+mom(0.9)')
+
+
+    print('KNN w=distance, k=11:')
+    print('- R2 0.998, R2 valid 0.74, Cross-val 0.73+-0.26, R2 test 0.82')
+
+    print('Light multilayer perceptron, Adam, dropout 0.75:')
+    print('- R2~0.70, R2 test 0.6-0.8')
+
+    print('Light multilayer perceptron, learn rate 0.005, 250 k iter:')
+    print('- R2~0.86 (max 0.90), R2 valid 0.59, R2 test 0.16')
+    print('- valid.max at ~50 k')
+
+    print('Light MLP, learn rate 0.005, 100 k iter, batchsz 234:')
+    print('- R2 0.91, R2 valid 0.64, R2 test 0.39')
+    print('- valid.max at ~40 k')
+
+    print('MLP, learn rate 0.001, 50 k iter, Adam, batchsz 234:')
+    print('- R2 0.93 (max 0.95), R2 valid 0.72, R2 test 0.58')
+    print('- valid.max at ~12.4 k')
+    print('-- this with 12.35 K iter: valid 0.69, test 0.72')
+
+    print('MLP, learn rate 0.001, 50 k iter, Adam, batchsz 100, drop 0.8:')
+    print('- R2 0.91, R2 valid 0.70, R2 test 0.74')
+
+
 
 
 def main():    
@@ -321,8 +394,9 @@ def main():
 
     print('Missing values in columns:\n', ml.missingValues())
     print('Missing values in Kaupunginosa:', sum( ml.df['Kaupunginosa'].isnull() ) )
-    print('Rows with missing Kaupunginosa:')
-    print(ml.df[ml.df['Kaupunginosa'].isnull()])
+    if(False):
+        print('Rows with missing Kaupunginosa:')
+        print(ml.df[ml.df['Kaupunginosa'].isnull()])
 
     method_to_fillna = 'random'
     print('Filling missing value in Kaupunginosa with:', method_to_fillna)
@@ -333,8 +407,9 @@ def main():
     print('Randomizing the rows of the dataframe')
     ml.randomizeRows(seed=0)
 
-    print(ml.df.head(3))
-    print('Missing values in columns:\n', ml.missingValues())
+    if(False):
+        print(ml.df.head(3))
+        print('Missing values in columns:\n', ml.missingValues())
     ml.examine()    
 
     # TODO: Encode kaup.osa into features
@@ -347,12 +422,15 @@ def main():
 
     print("---------------------------------------------")
     print("\n*Study standard ML models")
-    study_standard_ml(ml)
+    if(False):
+        study_standard_ml(ml)
 
     print("---------------------------------------------")
-    print("\n*Study simple neural network for regression")
-    study_nn(ml)
+    print("\n*Study neural network for regression")
+    if(True):
+        study_nn(ml)
 
+    print_results_for_reference()
 
 
     print('------------\nDone')
