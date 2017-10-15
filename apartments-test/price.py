@@ -141,7 +141,7 @@ def study_nn(ml):
     # .. params:  [[ 20489.955   1260.256   1232.52 ]]
 
     ## A. Single-layer perceptron (slp) 
-    make_slp = True
+    make_slp = False
     if(make_slp):    
         W = tf.Variable(tf.zeros([A, B]))
         # W from ordinary linear fit
@@ -188,7 +188,7 @@ def study_nn(ml):
         Y = tf.matmul(Y5, W5) + B5
 
     ## C. Light multilayer perceptron
-    make_mlp = False
+    make_mlp = True
     if(make_mlp):
         print('Lightweight MLP')
         # Variables
@@ -198,11 +198,18 @@ def study_nn(ml):
         M = 60
         N = 30
         O = B
-        W1 = tf.Variable(tf.truncated_normal([A, K], stddev=0.1))
+
+        #W1 = tf.Variable(tf.truncated_normal([A, K], stddev=0.1))
+        W1 = tf.get_variable("W1", shape=[A, K],
+           initializer=tf.contrib.layers.xavier_initializer(uniform=True))
         B1 = tf.Variable(tf.zeros([K]))
-        W2 = tf.Variable(tf.truncated_normal([K, N], stddev=0.1))
+        #W2 = tf.Variable(tf.truncated_normal([K, N], stddev=0.1))
+        W2 = tf.get_variable("W2", shape=[K, N],
+           initializer=tf.contrib.layers.xavier_initializer(uniform=True))
         B2 = tf.Variable(tf.zeros([N]))
-        W5 = tf.Variable(tf.truncated_normal([N, O], stddev=0.1))
+        #W5 = tf.Variable(tf.truncated_normal([N, O], stddev=0.1))
+        W5 = tf.get_variable("W5", shape=[N, O],
+           initializer=tf.contrib.layers.xavier_initializer(uniform=True))
         B5 = tf.Variable(tf.zeros([O]))
         # Model
         Y1 = tf.nn.relu(tf.matmul(X, W1) + B1)
@@ -235,7 +242,7 @@ def study_nn(ml):
 
     # num_steps=12730 # looks good for light MLP
     # num_steps=12350 # 
-    num_steps=40000 
+    num_steps=5000 
     
     
     # Optimizer
@@ -247,7 +254,7 @@ def study_nn(ml):
     Choice depends on user'f familiarity of algorithm and hyperpar tuning 
     Adam fairly robust to choice of hyperparameter
     """
-    learning_rate = 0.01   # was: 0.005
+    learning_rate = 0.005   # was: 0.005
     # To try: learning rate decay
 
     # RMSProp
