@@ -14,6 +14,36 @@ import  numpy as np
 import  bayespy.plot as bpplt
 from  bayespy  import  nodes
 
+def poisson():
+    """
+    Poisson data
+    """
+    # Prior: kill rate theta
+    theta = nodes.Gamma(1.11, 1.61)
+    import bayespy.plot as bpplt
+    bpplt.pyplot.figure()
+    bpplt.pdf(theta, np.linspace(0.01, 3, num=300))
+    bpplt.pyplot.title(' ')    
+
+    # Number of a:s killed per day
+    y = nodes.Poisson(theta, plates=(13,))
+    print(y.random())
+
+    # Observed data    
+    data=[1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]
+    y.observe(data)
+
+    # Update theta
+    theta.update()
+
+    print(y.random())
+
+    bpplt.pyplot.figure()
+    bpplt.pdf(theta, np.linspace(0.01, 3, num=300))
+    bpplt.pyplot.title(' ')    
+
+
+
 
 def defective():
     """ 
@@ -337,6 +367,9 @@ def two_gaussians():
 def main():
 
     if(True):
+        poisson()
+        
+    if(False):
         defective()
         
     if(False):
