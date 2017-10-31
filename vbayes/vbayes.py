@@ -14,6 +14,76 @@ import  numpy as np
 import  bayespy.plot as bpplt
 from  bayespy  import  nodes
 
+
+def time_to_event():
+    """
+    How long it takes that something happens?
+      Complicating factor: censoring
+    """
+
+    # Data
+    data1=np.log([60, 74, 37, 45, 75, 40, 50, 50, 146, 70, 50, 84, 60, 149, 50])
+    data2=np.log([50, 130, 100, 130, 50, 140, 129, 76, 138, 69, 70, 144])
+
+
+    # Prior
+    from bayespy.nodes import GaussianARD
+    from bayespy.nodes import Gamma
+
+    mu1 = GaussianARD(0, 1e-3)
+    tau1 = Gamma(1e-3, 1e-3)
+    mu2 = GaussianARD(0, 1e-3)
+    tau2 = Gamma(1e-3, 1e-3)
+
+    # Alternative prior
+    if(True):
+        mu1 = GaussianARD(0, 1e-6)
+        tau1 = Gamma(1e-6, 1e-6)
+        mu2 = GaussianARD(0, 1e-6)
+        tau2 = Gamma(1e-6, 1e-6)
+
+    import bayespy.plot as bpplt
+    bpplt.pyplot.figure()
+    # bpplt.pdf(tau1, np.linspace(1e-6, 0.00004, num=300))
+    bpplt.pdf(mu1, np.linspace(1e-6, 1000, num=300))
+    bpplt.pyplot.title('PDF of mu1')    
+
+
+
+        
+    # Data samples assumed from log-normal distribution
+    y1 = GaussianARD(mu1, tau1, plates=(len(data1),))
+    y2 = GaussianARD(mu2, tau2, plates=(len(data2),))
+
+    y1.observe(data1)
+    y2.observe(data2)
+    
+    
+    # Inference engine
+    from bayespy.inference import VB
+    Q1 = VB(y1, mu1, tau1)
+    print('get_moments, mu1:', mu1.get_moments())
+    Q1.update(repeat=100)
+    print('get_moments, mu1:', mu1.get_moments())
+
+    Q2 = VB(y2, mu2, tau2)
+    Q2.update(repeat=100)
+    print('get_moments, mu2:', mu2.get_moments())
+
+
+    # Examine the posterior approximation
+    bpplt.pyplot.figure()
+    bpplt.pdf(Q1[mu1], np.linspace(0, 10, num=300))
+    bpplt.pyplot.title('PDF of mu')    
+    bpplt.pdf(Q2[mu2], np.linspace(0, 10, num=300))
+    bpplt.pyplot.title('PDF of mu')    
+
+
+    # Difference in data
+    print('Delta:', np.exp(mu1.get_moments()[0]) - np.exp(mu2.get_moments()[0]))
+
+    
+    
 def poisson():
     """
     Poisson data
@@ -367,6 +437,9 @@ def two_gaussians():
 def main():
 
     if(True):
+        time_to_event()
+        
+    if(False):
         poisson()
         
     if(False):
