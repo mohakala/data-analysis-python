@@ -19,6 +19,10 @@ def time_to_event():
     """
     How long it takes that something happens?
       Complicating factor: censoring
+    The samples are drawn from log-normal distribution
+    Normal distribution: defined by mean and variance
+    
+    Gaussian prior - Gaussian likelihood
     """
 
     # Data
@@ -42,6 +46,8 @@ def time_to_event():
         mu2 = GaussianARD(0, 1e-6)
         tau2 = Gamma(1e-6, 1e-6)
 
+
+    # Plot the prior
     import bayespy.plot as bpplt
     bpplt.pyplot.figure()
     # bpplt.pdf(tau1, np.linspace(1e-6, 0.00004, num=300))
@@ -50,32 +56,44 @@ def time_to_event():
 
 
 
-        
+    # Likelihood    
     # Data samples assumed from log-normal distribution
     y1 = GaussianARD(mu1, tau1, plates=(len(data1),))
     y2 = GaussianARD(mu2, tau2, plates=(len(data2),))
 
     y1.observe(data1)
     y2.observe(data2)
+
+    print('Before observations:')
+    print('get_moments, mu1:', mu1.get_moments())
+    
     
     
     # Inference engine
-    from bayespy.inference import VB
-    Q1 = VB(y1, mu1, tau1)
+    #  not needed since we have a conjugate prior and likelihood
+    if(False):
+        from bayespy.inference import VB
+        Q1 = VB(y1, mu1, tau1)
+        Q1.update(repeat=100)
+
+        Q2 = VB(y2, mu2, tau2)
+        Q2.update(repeat=100)
+        print('get_moments, mu2:', mu2.get_moments())
+
+
+    # Update the posteriors directly
+    mu1.update()
+    mu2.update()
+
+    print('After observations:')
     print('get_moments, mu1:', mu1.get_moments())
-    Q1.update(repeat=100)
-    print('get_moments, mu1:', mu1.get_moments())
-
-    Q2 = VB(y2, mu2, tau2)
-    Q2.update(repeat=100)
-    print('get_moments, mu2:', mu2.get_moments())
 
 
-    # Examine the posterior approximation
+    # Examine the posterior approximation for means of gaussians (mu)
     bpplt.pyplot.figure()
-    bpplt.pdf(Q1[mu1], np.linspace(0, 10, num=300))
+    bpplt.pdf(mu1, np.linspace(0, 10, num=300))
     bpplt.pyplot.title('PDF of mu')    
-    bpplt.pdf(Q2[mu2], np.linspace(0, 10, num=300))
+    bpplt.pdf(mu2, np.linspace(0, 10, num=300))
     bpplt.pyplot.title('PDF of mu')    
 
 
@@ -87,16 +105,23 @@ def time_to_event():
 def poisson():
     """
     Poisson data
+    
+    Gamma prior - Poisson likelihood
     """
     # Prior: kill rate theta
     theta = nodes.Gamma(1.11, 1.61)
     import bayespy.plot as bpplt
     bpplt.pyplot.figure()
     bpplt.pdf(theta, np.linspace(0.01, 3, num=300))
-    bpplt.pyplot.title(' ')    
+    bpplt.pyplot.title(' ')  
+    print('theta moments:', theta.get_moments())
 
-    # Number of a:s killed per day
+    # Likelihood
+    #   Number of a:s killed per day
     y = nodes.Poisson(theta, plates=(13,))
+    
+    # Print 13 random samples from the likelihood 
+    print('Random samples:')
     print(y.random())
 
     # Observed data    
@@ -106,6 +131,7 @@ def poisson():
     # Update theta
     theta.update()
 
+    # Print 13 random samples from posterior distribution 
     print(y.random())
 
     bpplt.pyplot.figure()
@@ -119,6 +145,8 @@ def defective():
     """ 
     Binomial data 
     From Bayesian Ideas and Data Analysis
+    
+    Beta prior - Binomial likelihood
     """
     import warnings
     warnings.filterwarnings('ignore', category=RuntimeWarning)
@@ -169,7 +197,11 @@ def defective():
     
     
 def example_from_article():
-    """ Example from the paper """
+    """ 
+    Example from the paper 
+    
+    Gaussian prior - Gaussian likelihood
+    """
 
     # Model
     from bayespy.nodes import GaussianARD
@@ -177,6 +209,7 @@ def example_from_article():
     from bayespy.nodes import Gamma
     tau = Gamma(1e-6, 1e-6)
 
+    # Likelihood
     y = GaussianARD(mu, tau, plates=(12,))
     
     data = np.array([4.5, 3.9, 6.3, 5.6, 4.9, 2.8, 7.4, 6.1, 4.8, 2.1])
@@ -223,6 +256,8 @@ def zinc():
     """ 
     Zinc content data (normal data)
     From Bayesian Ideas and Data Analysis
+    
+    Gaussian prior - Gaussian likelihood
     """
     data = np.array([4.20, 4.36, 4.11, 3.96, 
                      5.63, 4.50, 5.64, 4.38, 
@@ -300,7 +335,11 @@ def zinc():
 
 
 def linreg():
-    """ http://bayespy.org/examples/regression.html """
+    """ 
+    http://bayespy.org/examples/regression.html 
+    
+    Gaussian prior - Gaussian likelihood
+    """
 
     ## Data
     
@@ -330,7 +369,8 @@ def linreg():
     tau = Gamma(1e-3, 1e-3)
     print('tau:', tau)
 
-    # Noisy observations
+    # Likelihood 
+    #   Noisy observations
     Y = GaussianARD(F, tau)
     print('Y:', Y)
 
@@ -387,7 +427,11 @@ def linreg():
 
     
 def two_gaussians():
-    """ Two 2D-Gaussians at (0,0) and (2,2) """
+    """ 
+    Two 2D-Gaussians at (0,0) and (2,2) 
+    
+    Dirichlet prior
+    """
     N = 500; D = 2
     data = np.random.randn(N, D)
     data [:200 ,:] += 2*np.ones(D)
@@ -436,10 +480,10 @@ def two_gaussians():
 
 def main():
 
-    if(True):
+    if(False):
         time_to_event()
         
-    if(False):
+    if(True):
         poisson()
         
     if(False):
