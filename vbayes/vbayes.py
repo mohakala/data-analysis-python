@@ -14,6 +14,71 @@ import  numpy as np
 import  bayespy.plot as bpplt
 from  bayespy  import  nodes
 
+import pandas as pd
+
+
+def traveltime_min():
+    pass
+
+def traveltime():
+    rawdata='C:\\Python34\\datasets\\matkaaika_V1.csv'
+    df = pd.read_csv(rawdata)
+
+    # Delete unnecessary columns
+    col_to_delete=['0', 'lunta', 'huono keli']
+    df=df.drop(col_to_delete, 1)
+
+    # Delete rows with missing values
+    df = df.dropna()
+    print(df.describe())
+        
+    X=df['min8'].values
+    X=X.reshape(-1, 1)
+    y=df['kesto'].values
+    
+    # Center the observations y to zero
+    ymean = np.mean(y)
+    y = y - ymean
+    print('ymean = ', ymean, 'Centering y to zero')
+    
+    
+    # Prior
+    from bayespy.nodes import GaussianARD
+    from bayespy.nodes import Gamma
+
+    mu1 = GaussianARD(0, 0.05)
+    tau1 = Gamma(1e-3, 1e-3)
+
+
+    # Likelihood    
+    # Data samples assumed from normal distribution
+    y1 = GaussianARD(mu1, tau1, plates=(len(y),))
+    y1.observe(y)
+
+
+    print('Before observations:')
+    print('get_moments, mu1:', mu1.get_moments())
+    print('get_moments, tau1:', tau1.get_moments())
+
+
+    # Update the posteriors directly
+    mu1.update()
+
+    print('After observations:')
+    print('get_moments, mu1:', mu1.get_moments())
+    print('get_moments, tau1:', tau1.get_moments())
+    sigma = np.sqrt(mu1.get_moments()[1])
+    print('Result: ymean +_ 2sigma =', ymean, '+_', 2*sigma)
+
+
+    # Examine the posterior approximation for means of gaussians (mu)
+    import bayespy.plot as bpplt
+    bpplt.pyplot.figure()
+    bpplt.pdf(mu1, np.linspace(-10, 10, num=300))
+    bpplt.pyplot.title('PDF of mu')    
+
+
+
 
 def time_to_event():
     """
@@ -480,10 +545,13 @@ def two_gaussians():
 
 def main():
 
+    if(True):
+        traveltime()
+    
     if(False):
         time_to_event()
         
-    if(True):
+    if(False):
         poisson()
         
     if(False):
