@@ -17,10 +17,7 @@ from  bayespy  import  nodes
 import pandas as pd
 
 
-def traveltime_min():
-    pass
-
-def traveltime():
+def load_data_xy():    
     rawdata='C:\\Python34\\datasets\\matkaaika_V1.csv'
     df = pd.read_csv(rawdata)
 
@@ -35,6 +32,11 @@ def traveltime():
     X=df['min8'].values
     X=X.reshape(-1, 1)
     y=df['kesto'].values
+    return(X, y)
+
+
+def traveltime():
+    X, y = load_data_xy()
     
     # Center the observations y to zero
     ymean = np.mean(y)
@@ -396,6 +398,15 @@ def zinc():
 
 
 
+
+def traveltime_min():
+    X, y = load_data_xy()
+
+    # Prior distribution for tau = sigma^-2
+    from bayespy.nodes import Gamma
+    tau = Gamma(1e-3, 1e-3)
+    print('tau:', tau)
+    
     
 
 
@@ -406,14 +417,14 @@ def linreg():
     Gaussian prior - Gaussian likelihood
     """
 
-    ## Data
-    
+    ## Data    
     k = 2 # slope
     c = 5 # bias
     s = 2 # noise standard deviation
 
     x = np.arange(10)
     y = k*x + c + s*np.random.randn(10)
+
 
     ## Model
     
@@ -545,7 +556,7 @@ def two_gaussians():
 
 def main():
 
-    if(True):
+    if(False):
         traveltime()
     
     if(False):
@@ -563,7 +574,7 @@ def main():
     if(False):
         zinc()
 
-    if(False):
+    if(True):
         linreg()
 
     if(False):
