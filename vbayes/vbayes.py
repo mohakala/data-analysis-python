@@ -574,10 +574,10 @@ def main():
     if(False):
         zinc()
 
-    if(True):
+    if(False):
         linreg()
 
-    if(False):
+    if(True):
         two_gaussians()
 
 
