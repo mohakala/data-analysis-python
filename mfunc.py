@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.api as sm 
-from scipy.stats import linregress
 import sys
 sys.path.insert(0, 'C:\Python34\data-analysis-python')
 #from mfunc import *  # Some own functions
+
 
 def getData(filename):
     """
@@ -34,9 +34,17 @@ def listModules():
     installed_packages_list = sorted(["%s==%s" % (i.key, i.version) for i in installed_packages])
     print(installed_packages_list)
 
+
+"""
+##############################################################    
+##### statistics examples #####    
+##############################################################    
+"""
+
+
 def correlationTests():
     """
-    Introductino to Correlation
+    Introduction to Correlation
          https://www.datascience.com/blog/introduction-to-correlation-learn-data-science-tutorials
     Pearson correlation coefficient
     Spearman's rank correlatino coefficient
@@ -84,18 +92,21 @@ def correlationTests():
 
 
 def quickStudy2(x,y):
-    # Descriptive statistics and linear regrsssion
+    # Descriptive statistics and linear regression
     print('MEAN X = ',x.mean(),'+_',np.std(x, ddof=1)/np.sqrt(len(x)))
     print('MEAN Y = ',y.mean(),'+_',np.std(y, ddof=1)/np.sqrt(len(x)))
     print('STD Y = ',np.std(y, ddof=1))
+
+    from scipy.stats import linregress
     slope, intercept, r, prob2, see = linregress(x, y)
     # see = standard errof of estimated gradient
     print('Pearson correlation coefficient r:',r)
     print('R^2 coefficient of determination (Selitysaste):',r**2)
     print('P-VALUE (2-SIDED) FOR SLOPE TO BE ZERO =',prob2)
-    print('slope,intercept=',slope,intercept)
-    m,b=np.polyfit(x,y,1) 
-    print('m,b=',m,b)
+    print('slope,intercept=',slope, intercept)
+
+    m,b=np.polyfit(x, y, 1) 
+    print('m,b=', m, b)
 
     # Ordinary linear system for x,y
     xx= sm.add_constant(x,prepend=False)
@@ -103,22 +114,24 @@ def quickStudy2(x,y):
     print(results.summary())
 
     # Ordinary linear system for x,x^2,y
+    import statsmodels.api as sm 
     xx= sm.add_constant(x,prepend=False)
     x2=x[:,np.newaxis]*x[:,np.newaxis] # second power
     xxx = np.concatenate((xx,x2),axis=1)
     results=sm.OLS(y,xxx).fit()
 
-def r2values(x,y,ypred,p):
+
+def r2values(x, y, ypred, p):
     # http://stackoverflow.com/questions/893657/how-do-i-calculate-r-squared-using-python-and-numpy
     # Returns the values of r2 and adjusted r2
-    yave=np.mean(y)
-    ssreg = np.sum((ypred-yave)**2)   
+    yave = np.mean(y)
+    ssreg = np.sum((ypred - yave)**2)   
     sstot = np.sum((y - yave)**2) 
-    ssres = np.sum((ypred-y)**2)
+    ssres = np.sum((ypred - y)**2)
     r2 = ssreg / sstot        # or: r2 = 1-(ssres/sstot))
-    n=len(y) 
+    n = len(y) 
     r2adj = 1- ( (ssres/(n-p-1)) / (sstot/(n-1)) ) 
-    return(r2,r2adj)
+    return(r2, r2adj)
 
 
 def wilcoxon(x,y):
@@ -126,7 +139,7 @@ def wilcoxon(x,y):
     # Are the samples from different or same distribution?
     import scipy
     z_stat, p_val = scipy.stats.ranksums(x,y)  
-    print('P-value of ranksumtest=',p_val)
+    print('P-value of ranksumtest=', p_val)
 
 
 def mannWhitney(x,y):
@@ -142,8 +155,15 @@ def kluvut(x):
     keskiarvo = np.mean(x)
     otoskeskihajonta = np.std(x, ddof=1)
     n = max(x.shape)
-    keskivirhe = keskihajonta/np.sqrt(n)
+    keskivirhe = otoskeskihajonta/np.sqrt(n)
     return(keskiarvo, otoskeskihajonta, keskivirhe)
+
+
+"""
+##############################################################    
+##### numpy examples #####    
+##############################################################    
+"""
 
 
 def numpyExamples(x,y):
@@ -229,6 +249,14 @@ def plotExamples(x,y):
 # http://matplotlib.org/users/tight_layout_guide.html    
     plt.tight_layout()
     plt.show()
+
+
+"""
+##############################################################    
+##### Other functions #####    
+##############################################################    
+"""
+
 
  
 def lin():

@@ -172,8 +172,26 @@ def time_to_event():
 def poisson():
     """
     Poisson data
-    
     Gamma prior - Poisson likelihood
+    
+    Poisson distribution: Natural distribution of the number of 
+    events occurring randomly over a given amount of time.
+    
+    Draw samples y1, y2,... from Pois(theta), theta = kill rate = 
+      kills per day. Experiment observes samples y1=0, y2=2 ... per day
+    Prior of theta: expectation of kill rate, say 0.5. Then median
+    of prior distribution is at 0.5. expectation of kill rate 95% to 
+    be less than 2. 
+    --> theta ~ Gamma(a, b), a and b from equations:
+      Pr(theta < 0.5 | a, b) = 0.50
+      Pr(theta < 2   | a, b) = 0.95 
+    --> get a and b --> prior for theta
+    
+    With this prior and likelihood, the posterior theta 
+    can be found analytically 
+    --> Get theta distribution and the 95% probability interval
+    0.140, 0.468
+    
     """
     # Prior: kill rate theta
     theta = nodes.Gamma(1.11, 1.61)
@@ -562,7 +580,7 @@ def main():
     if(False):
         time_to_event()
         
-    if(False):
+    if(True):
         poisson()
         
     if(False):
@@ -577,7 +595,7 @@ def main():
     if(False):
         linreg()
 
-    if(True):
+    if(False):
         two_gaussians()
 
 
