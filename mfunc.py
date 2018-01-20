@@ -24,6 +24,9 @@ def getData(filename):
     df = pd.read_csv(filename) 
     df = pd.read_csv(path, header=None, names=['X1', 'X2', 'Y'])
 
+    # With numpy
+    data = np.genfromtxt(path_local, delimiter=',')
+
     return df
 
 
