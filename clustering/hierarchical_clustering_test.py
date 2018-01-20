@@ -22,6 +22,7 @@ path_local = 'C:\Python34\\datasets\\kaupungit_etaisyysmatriisi.csv'
 distMatrix = np.genfromtxt(path_local, delimiter=',')
 print(distMatrix.shape)
 
+
 kaupunki = [
 "Espoo",
 "Helsinki",
@@ -40,19 +41,37 @@ kaupunki = [
 "Vantaa"
 ]
 
+
+print('==== Scipy ==========')
+
+
 # https://stats.stackexchange.com/questions/2717/clustering-with-a-distance-matrix
 
 # https://stackoverflow.com/questions/18952587/use-distance-matrix-in-scipy-cluster-hierarchy-linkage
 import scipy.spatial.distance as ssd
 # convert the redundant n*n square matrix form into a condensed nC2 array
 distArray = ssd.squareform(distMatrix) # distArray[{n choose 2}-{n-i choose 2} + (j-i-1)] is the distance between points i and j
+print(distArray.shape)
 
-Z = scipy.cluster.hierarchy.linkage(distArray, method='ward', metric='euclidean')
+#method = 'ward'
+method = 'average'
+Z = scipy.cluster.hierarchy.linkage(distArray, method=method, metric='euclidean')
 # method = 'single'
 
 fig = plt.figure(figsize=(5, 5))
 dn = dendrogram(Z)
 plt.show()
+
+""" 
+Explanation of Z
+
+A by 4 matrix Z is returned. At the i:th iteration, clusters with 
+indices Z[i, 0] and Z[i, 1] are combined to form cluster. A 
+cluster with an index less than corresponds to one of the original 
+observations. The distance between clusters Z[i, 0] and Z[i, 1] is 
+given by Z[i, 2]. The fourth value Z[i, 3] represents the number 
+of original observations in the newly formed cluster.
+"""
 
 print('\nFar from the rest')
 for i in (8, 10):
@@ -70,6 +89,19 @@ for index, j in enumerate((list1, list2, list3, list4)):
         print(i, kaupunki[i])
 
 
+print('\n==== Scikit-learn ============')
+
+n_clusters = 5
+linkage = 'average'
+affinity = 'precomputed'
+model = AgglomerativeClustering(n_clusters=n_clusters, 
+                                affinity=affinity, linkage=linkage)
+model.fit(distMatrix)
+
+print('City, cluster')
+for index, label in enumerate(model.labels_):
+    print(kaupunki[index], label)
+    
 
 #>>> from scipy.cluster.hierarchy import dendrogram, linkage
 #>>> from matplotlib import pyplot as plt
