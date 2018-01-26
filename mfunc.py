@@ -188,6 +188,9 @@ def numpyExamples(x,y):
 ##############################################################    
 """
 
+import matplotlib.pyplot as plt
+plt.plot(x, y, '-')
+
 def plot1(df):
     import matplotlib.pyplot as plt
     fig=plt.figure()
