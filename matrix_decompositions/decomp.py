@@ -90,19 +90,33 @@ def SVD_decomp():
     smat[:6, :6] = np.diag(s)
     np.allclose(a, np.dot(u, np.dot(smat, vh)))
     
+    # Links
+    #   About SVD: https://gist.github.com/addisonhuddy/8a9e682259c9dca1f61672b4027863dc
+    
     
 def NMF_decomp():
     # Find two non-negative matrices (W, H) whose product 
     # approximates the non- negative matrix X. 
+    # 
+    # V ~ W H
+    # V = [v1, v2, .., vn] with vn columns, e.g. text document representations
+    # vi = column representing one document (e.g. word frequencies)
+    # W = feature matrix [w1, w2, ..., wp], the 'basis'
+    # H = coefficient matrix [h1, h2, ...]
+    # vi ~ W hi, so v1 is superposition of features wi in feature matrix
     #
     # This factorization can be used for example for 
     # dimensionality reduction, source separation or 
     # topic extraction.
+    # 
+    # Other example: V is a set of n spectra. Each spectrum can be 
+    # represented by small number of basis spectra wi
     #
     # For example:
     #   https://www.slideshare.net/koorukuroo/nmf-with-python
     import numpy as np
-    X = np.array([[1, 1], [2, 1], [3, 1.2], [4, 1], [5, 0.8], [6, 1]])
+    #X = np.array([[1, 1], [2, 1], [3, 1.2], [4, 1], [5, 0.8], [6, 1]])
+    X = np.array([[1, 1, 1], [2, 1, 2], [3, 1.2, 3], [4, 1, 3], [5, 0.8, 4.5], [6, 1, 5.5]])
     print('X:', X)
     from sklearn.decomposition import NMF
     model = NMF(n_components=2, init='random', random_state=0)
@@ -111,7 +125,7 @@ def NMF_decomp():
     H = model.components_
     print('H:', H)
     B = W.dot(H)
-    print('Reconstructed:', B)
+    print('Reconstructed:\n', B)
 
 
     
