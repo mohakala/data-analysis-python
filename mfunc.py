@@ -192,7 +192,11 @@ def numpyExamples(x,y):
 """
 
 import matplotlib.pyplot as plt
-plt.plot(x, y, '-')
+plt.plot(x, y, '-', linewidth = 2, label = "a")
+
+plt.figure()
+plt.figure(figsize=(15, 15))
+
 
 def plot1(df):
     import matplotlib.pyplot as plt
