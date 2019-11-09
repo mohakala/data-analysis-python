@@ -18,8 +18,8 @@ def example1():
     twoDim = False
     
     # generate a sample
-    X1 = normal(loc=20, scale=2, size=300)
-    X2 = normal(loc=40, scale=5, size=700)
+    X1 = normal(loc=30, scale=2, size=3000)
+    X2 = normal(loc=40, scale=5, size=7000)
     X = hstack((X1, X2)).reshape(-1, 1)
 
     if twoDim:    
@@ -48,6 +48,9 @@ def example1():
     # predict latent values
     yhat = model.predict(X)
     
+    plt.scatter(X[:, 0], X[:, 0]+5*np.random.rand(X.shape[0]), c=yhat, s=40, cmap='viridis')
+    plt.show()
+    
     if twoDim: 
         plt.scatter(X[:, 0], X[:, 1], c=yhat, s=40, cmap='viridis')
         plt.show()
@@ -69,6 +72,12 @@ def example1():
 
 
     print('params', model.get_params())
+    
+    # fit model
+    components = [1, 2, 3, 4, 5, 6, 7]
+    for n, comp in enumerate(components):
+        model = GaussianMixture(n_components=comp, init_params='kmeans').fit(X)
+        print('n, aic, bic', comp, model.aic(X), model.bic(X))
     
     
     
