@@ -137,7 +137,7 @@ class Capsule(Layer):
 
 batch_size = 128
 num_classes = 10
-epochs = 2  #  100
+epochs = 15  #  100
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
 x_train = x_train.astype('float32')
